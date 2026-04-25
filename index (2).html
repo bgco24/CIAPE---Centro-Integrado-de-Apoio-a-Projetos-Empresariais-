@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CIAPE — Banco de Problemas e Soluções | UNIPAR</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#0A1628;--navy-mid:#0F2044;--navy-light:#1A3260;
+  --gold:#C9961A;--gold-b:#E8B830;--gold-pale:#F5D875;
+  --white:#FAFAF8;--muted:#8A9AB5;--border:#1E3155;
+  --success:#2ECC8A;--danger:#E05252;--tag-bg:rgba(201,150,26,.12);
+  --r-sm:8px;--r-md:12px;--r-lg:16px;
+  --header-h:60px;--pad:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 10%,rgba(201,150,26,.07) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 10% 80%,rgba(26,50,96,.6) 0%,transparent 70%);pointer-events:none;z-index:0}
+button{cursor:pointer;font-family:inherit}
+input,select,textarea{font-family:inherit}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:50;height:var(--header-h);padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(10,22,40,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+.logo-block{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
+.logo-badge{width:36px;height:36px;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--gold-b));border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:var(--navy);letter-spacing:-.5px}
+.logo-text{display:flex;flex-direction:column;line-height:1.1;min-width:0}
+.logo-text strong{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo-text span{font-size:10px;color:var(--muted);font-weight:300;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:480px){.logo-text span{display:none}}
+.header-nav{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.nav-btn{padding:8px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:500;border:none;transition:all .2s;white-space:nowrap}
+.nav-btn.ghost{background:transparent;color:var(--muted)}
+.nav-btn.ghost:hover{color:var(--white);background:rgba(255,255,255,.05)}
+.nav-btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold-b));color:var(--navy);font-weight:700}
+.nav-btn.primary:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,150,26,.3)}
+
+/* HAMBURGER */
+.hamburger{display:none;width:36px;height:36px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r-sm);align-items:center;justify-content:center;flex-direction:column;gap:5px;flex-shrink:0}
+.hamburger span{display:block;width:18px;height:2px;background:var(--white);border-radius:2px;transition:all .25s}
+.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+@media(max-width:700px){.hamburger{display:flex}.header-nav .nav-btn.ghost{display:none}.header-nav .nav-btn.primary{display:none}}
+
+/* MOBILE DRAWER */
+.mobile-drawer{position:fixed;top:var(--header-h);left:0;right:0;background:var(--navy-mid);border-bottom:1px solid var(--border);z-index:49;padding:14px var(--pad);display:flex;flex-direction:column;gap:8px;transform:translateY(-110%);transition:transform .28s cubic-bezier(.4,0,.2,1)}
+.mobile-drawer.open{transform:translateY(0)}
+.mobile-drawer .nav-btn{width:100%;text-align:center;padding:12px}
+
+/* HERO */
+.hero{position:relative;z-index:5;padding:40px var(--pad) 36px;max-width:1200px;margin:0 auto}
+@media(min-width:768px){.hero{padding:60px 40px 48px}}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--tag-bg);border:1px solid rgba(201,150,26,.25);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:500;color:var(--gold-b);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold-b);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,5.5vw,50px);line-height:1.08;letter-spacing:-1px;margin-bottom:12px}
+h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold-pale));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{color:var(--muted);font-size:14.5px;font-weight:300;line-height:1.65;margin-bottom:26px;max-width:520px}
+.hero-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(min-width:480px){.hero-stats{display:flex;flex-wrap:wrap;gap:24px}}
+.stat{display:flex;flex-direction:column;gap:2px}
+.stat-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:var(--gold-b)}
+.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+
+/* MAIN */
+.main-wrap{position:relative;z-index:5;max-width:1200px;margin:0 auto;padding:0 var(--pad) 100px;display:flex;flex-direction:column;gap:20px}
+@media(min-width:900px){.main-wrap{padding:0 40px 80px;display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start}}
+.col-list{min-width:0}
+@media(max-width:899px){.col-list{order:1}.sidebar{order:2}}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:14px}
+@media(min-width:900px){.sidebar{position:sticky;top:calc(var(--header-h) + 16px)}}
+
+/* SECTION TITLE */
+.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.2px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* FILTERS */
+.filters-bar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;align-items:center}
+.filter-label{font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+.filter-chip{padding:6px 12px;border-radius:100px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .18s}
+.filter-chip:hover,.filter-chip.active{border-color:var(--gold);color:var(--gold-b);background:var(--tag-bg)}
+.search-wrap{width:100%;margin-top:4px;position:relative}
+@media(min-width:560px){.search-wrap{width:auto;margin-top:0;margin-left:auto}}
+.search-wrap input{width:100%;background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 14px 9px 36px;color:var(--white);font-size:13.5px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+@media(min-width:560px){.search-wrap input{width:210px}}
+.search-wrap input::placeholder{color:var(--muted)}
+.search-wrap input:focus{border-color:var(--gold)}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+
+/* CARDS */
+.problems-list{display:flex;flex-direction:column;gap:12px}
+.problem-card{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;cursor:pointer;transition:border-color .2s,transform .2s,box-shadow .2s;position:relative;overflow:hidden}
+.problem-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background .2s;border-radius:var(--r-lg) 0 0 var(--r-lg)}
+.problem-card:hover{border-color:rgba(201,150,26,.35);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.3)}
+.problem-card:hover::before{background:var(--gold)}
+.problem-card:active{transform:translateY(0)}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.card-company{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;letter-spacing:-.2px;line-height:1.2}
+.status-badge{padding:3px 10px;border-radius:100px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;flex-shrink:0}
+.status-badge.aberto{background:rgba(201,150,26,.15);color:var(--gold-b);border:1px solid rgba(201,150,26,.3)}
+.status-badge.em-andamento{background:rgba(46,204,138,.12);color:var(--success);border:1px solid rgba(46,204,138,.25)}
+.status-badge.concluido{background:rgba(138,154,181,.12);color:var(--muted);border:1px solid rgba(138,154,181,.2)}
+.card-problem-title{font-size:13.5px;font-weight:500;margin-bottom:7px;line-height:1.4}
+.card-desc{font-size:12.5px;color:var(--muted);font-weight:300;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
+.card-tags{display:flex;flex-wrap:wrap;gap:5px}
+.tag{padding:3px 9px;border-radius:6px;font-size:11px;font-weight:500;background:rgba(255,255,255,.05);color:var(--muted);border:1px solid rgba(255,255,255,.06)}
+.tag.area{background:rgba(26,50,96,.6);color:#7FA8D0;border-color:rgba(127,168,208,.15)}
+.card-meta{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px}
+.card-meta-left{display:flex;gap:14px;flex-wrap:wrap}
+.meta-item{display:flex;align-items:center;gap:4px}
+.card-cta{font-size:12px;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:4px;transition:gap .15s;white-space:nowrap;flex-shrink:0}
+.problem-card:hover .card-cta{gap:8px}
+.no-results{display:none;text-align:center;padding:40px;color:var(--muted);font-size:14px}
+
+/* SIDEBAR CARDS */
+.sidebar-card{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px}
+.sidebar-card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:14.5px;letter-spacing:-.2px;margin-bottom:0}
+
+/* COLLAPSIBLE */
+.coll-hdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.coll-arr{color:var(--muted);font-size:17px;transition:transform .25s;flex-shrink:0;line-height:1}
+.coll-hdr.open .coll-arr{transform:rotate(180deg)}
+.coll-body{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1),margin-top .25s;margin-top:0}
+.coll-body.open{max-height:900px;margin-top:14px}
+@media(min-width:900px){.coll-arr{display:none}.coll-body{max-height:none!important;overflow:visible!important;margin-top:14px!important}}
+
+/* FORM */
+.form-group{margin-bottom:11px}
+.form-group label{display:block;font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.req{color:var(--gold);font-size:13px;vertical-align:middle}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--navy);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;color:var(--white);font-size:13.5px;font-weight:300;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,150,26,.1)}
+.form-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A9AB5' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
+.form-group select option{background:var(--navy-mid)}
+.form-group textarea{resize:vertical;min-height:76px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:360px){.form-grid{grid-template-columns:1fr}}
+.checkbox-group{display:flex;flex-direction:column;gap:7px}
+.checkbox-item{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12.5px;color:var(--muted);transition:color .15s}
+.checkbox-item:hover{color:var(--white)}
+.checkbox-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--gold);cursor:pointer;padding:0;background:transparent;border:none;flex-shrink:0}
+.submit-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--gold),var(--gold-b));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--navy);letter-spacing:.2px;transition:all .2s;margin-top:6px}
+.submit-btn:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,150,26,.35)}
+.submit-btn:active{transform:translateY(0)}
+
+/* COURSE BARS */
+.course-bar{margin-bottom:11px}
+.course-bar-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:5px}
+.course-bar-top span:first-child{font-weight:500;color:var(--white)}
+.course-bar-top span:last-child{color:var(--muted)}
+.bar-track{height:5px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
+.bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--gold-b));transition:width 1s ease}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:13px}
+.step{display:flex;gap:11px;align-items:flex-start}
+.step-num{width:24px;height:24px;border-radius:50%;flex-shrink:0;background:var(--tag-bg);border:1px solid rgba(201,150,26,.3);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:var(--gold)}
+.step p.step-title{font-size:12.5px;font-weight:500;margin-bottom:1px}
+.step p.step-desc{font-size:11.5px;color:var(--muted);font-weight:300}
+
+/* FAB */
+.fab{display:none;position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));right:var(--pad);z-index:40;padding:13px 18px;background:linear-gradient(135deg,var(--gold),var(--gold-b));border:none;border-radius:50px;font-family:'Syne',sans-serif;font-weight:700;font-size:13.5px;color:var(--navy);letter-spacing:.2px;box-shadow:0 8px 28px rgba(201,150,26,.45);transition:transform .2s,box-shadow .2s;align-items:center;gap:7px}
+.fab:active{transform:scale(.96)}
+@media(max-width:700px){.fab{display:flex}}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(5,12,24,.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:0;opacity:0;pointer-events:none;transition:opacity .25s}
+@media(min-width:600px){.modal-overlay{align-items:center;padding:20px}}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{background:var(--navy-mid);border:1px solid var(--border);width:100%;max-height:92dvh;overflow-y:auto;position:relative;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));transform:translateY(40px);transition:transform .28s cubic-bezier(.4,0,.2,1)}
+@media(min-width:600px){.modal{max-width:640px;border-radius:var(--r-lg);padding:26px;transform:translateY(20px)}}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-handle{display:flex;justify-content:center;margin-bottom:14px}
+.modal-handle span{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15)}
+@media(min-width:600px){.modal-handle{display:none}}
+.modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:var(--r-sm);width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px;transition:all .15s}
+.modal-close:hover{color:var(--white);background:rgba(255,255,255,.1)}
+.modal-badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.modal-company{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(18px,4vw,22px);letter-spacing:-.4px;margin-bottom:5px}
+.modal-problem{font-size:15px;font-weight:500;color:var(--gold-pale);margin-bottom:14px;line-height:1.4}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+@media(max-width:380px){.modal-grid{grid-template-columns:1fr}}
+.modal-field{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.modal-field .label{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px}
+.modal-field .value{font-size:13.5px;font-weight:500}
+.modal-section{margin-bottom:14px}
+.modal-section h4{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:600;margin-bottom:6px}
+.modal-section p{font-size:13.5px;color:rgba(250,250,248,.8);font-weight:300;line-height:1.65}
+.modal-propose-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold-b));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--navy);transition:all .2s;margin-top:6px}
+.modal-propose-btn:hover{filter:brightness(1.1);box-shadow:0 6px 20px rgba(201,150,26,.3)}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(100px);z-index:200;background:var(--navy-light);border:1px solid rgba(46,204,138,.4);border-radius:var(--r-md);padding:12px 16px;display:flex;align-items:center;gap:9px;font-size:13px;font-weight:500;color:var(--success);box-shadow:0 8px 32px rgba(0,0,0,.4);transition:transform .35s cubic-bezier(.22,.61,.36,1);width:calc(100% - 32px);max-width:380px}
+.toast.show{transform:translateX(-50%) translateY(0)}
+@media(min-width:600px){.toast{left:auto;right:20px;transform:translateX(0) translateY(100px);width:auto}.toast.show{transform:translateX(0) translateY(0)}}
+
+/* ANIM */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+.problem-card{animation:fadeUp .35s ease both}
+.problem-card:nth-child(1){animation-delay:.04s}
+.problem-card:nth-child(2){animation-delay:.09s}
+.problem-card:nth-child(3){animation-delay:.14s}
+.problem-card:nth-child(4){animation-delay:.19s}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--navy)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--navy-light)}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo-block">
+    <div class="logo-badge">CIAPE</div>
+    <div class="logo-text">
+      <strong>Banco de Problemas e Soluções</strong>
+      <span>UNIPAR Cianorte · Centro Integrado de Apoio a Projetos Empresariais</span>
+    </div>
+  </div>
+  <nav class="header-nav">
+    <button class="nav-btn ghost" onclick="scrollTo('lista')">Ver Problemas</button>
+    <button class="nav-btn ghost" onclick="scrollTo('como-funciona')">Como Funciona</button>
+    <button class="nav-btn primary" onclick="openFormModal()">+ Cadastrar Problema</button>
+    <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<div class="mobile-drawer" id="mobileDrawer">
+  <button class="nav-btn ghost" onclick="scrollTo('lista');closeDrawer()">📋 Ver Problemas</button>
+  <button class="nav-btn ghost" onclick="scrollTo('como-funciona');closeDrawer()">⚙️ Como Funciona</button>
+  <button class="nav-btn primary" onclick="openFormModal();closeDrawer()">+ Cadastrar Problema</button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">CIAPE — UNIPAR Cianorte</div>
+  <h1>Conectamos <em>desafios reais</em> ao conhecimento acadêmico</h1>
+  <p class="hero-sub">Empresas depositam seus problemas. Os cursos da UNIPAR propõem soluções por meio de projetos de aula, extensão e pesquisa. O CIAPE coordena tudo.</p>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-val" id="stat-total">0</span><span class="stat-label">Problemas</span></div>
+    <div class="stat"><span class="stat-val" id="stat-abertos">0</span><span class="stat-label">Aguardando</span></div>
+    <div class="stat"><span class="stat-val" id="stat-andamento">0</span><span class="stat-label">Em Andamento</span></div>
+    <div class="stat"><span class="stat-val" id="stat-concluidos">0</span><span class="stat-label">Concluídos</span></div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<div class="main-wrap">
+  <div class="col-list" id="lista">
+    <div class="section-title">Problemas Cadastrados</div>
+    <div class="filters-bar">
+      <span class="filter-label">Filtrar:</span>
+      <button class="filter-chip active" onclick="filterCards('todos',this)">Todos</button>
+      <button class="filter-chip" onclick="filterCards('aberto',this)">Abertos</button>
+      <button class="filter-chip" onclick="filterCards('em-andamento',this)">Em Andamento</button>
+      <button class="filter-chip" onclick="filterCards('concluido',this)">Concluídos</button>
+      <div class="search-wrap">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        <input type="text" placeholder="Buscar empresa ou problema…" oninput="searchCards(this.value)">
+      </div>
+    </div>
+    <div class="problems-list" id="problemsList"></div>
+    <div class="no-results" id="noResults">Nenhum resultado encontrado.</div>
+  </div>
+
+  <aside class="sidebar">
+    <!-- FORM -->
+    <div class="sidebar-card">
+      <div class="coll-hdr" onclick="toggleColl(this)">
+        <h3>📌 Cadastrar Problema</h3>
+        <span class="coll-arr">⌄</span>
+      </div>
+      <div class="coll-body">
+        <div class="form-group"><label>Nome da Empresa <span class="req">*</span></label><input type="text" id="sb-empresa" placeholder="Ex.: Indústria Alfa Ltda."></div>
+        <div class="form-group"><label>Título do Problema <span class="req">*</span></label><input type="text" id="sb-titulo" placeholder="Em uma frase objetiva"></div>
+        <div class="form-group"><label>Área Afetada <span class="req">*</span></label>
+          <select id="sb-area"><option value="">Selecione…</option><option>Gestão / Administração</option><option>Recursos Humanos</option><option>Financeiro / Contábil</option><option>Jurídico / Compliance</option><option>Marketing / Vendas</option><option>Produção / Operações</option><option>Logística / Supply Chain</option><option>TI / Tecnologia</option><option>Saúde / Segurança</option><option>Engenharia / Infraestrutura</option><option>Sustentabilidade / Ambiental</option><option>Outro</option></select>
+        </div>
+        <div class="form-group"><label>Descrição <span class="req">*</span></label><textarea id="sb-descricao" placeholder="Contexto, impacto e o que já foi tentado…" rows="4"></textarea></div>
+        <div class="form-group"><label>Tipo de Solução Esperada</label>
+          <div class="checkbox-group">
+            <label class="checkbox-item"><input type="checkbox" id="cb-aula"> Projeto de Aula</label>
+            <label class="checkbox-item"><input type="checkbox" id="cb-extensao"> Extensão Universitária</label>
+            <label class="checkbox-item"><input type="checkbox" id="cb-pesquisa"> Pesquisa Aplicada</label>
+            <label class="checkbox-item"><input type="checkbox" id="cb-consultoria"> Consultoria Acadêmica</label>
+          </div>
+        </div>
+        <div class="form-grid">
+          <div class="form-group"><label>Contato</label><input type="text" id="sb-contato" placeholder="Nome"></div>
+          <div class="form-group"><label>Urgência</label><select id="sb-urgencia"><option value="">Selecione</option><option>Alta</option><option>Média</option><option>Baixa</option></select></div>
+        </div>
+        <div class="form-group"><label>E-mail / Telefone</label><input type="text" id="sb-email" placeholder="contato@empresa.com.br"></div>
+        <button class="submit-btn" onclick="submitProblem()">Submeter ao CIAPE →</button>
+      </div>
+    </div>
+
+    <!-- CURSOS -->
+    <div class="sidebar-card">
+      <div class="coll-hdr" onclick="toggleColl(this)">
+        <h3>🎓 Participação por Curso</h3>
+        <span class="coll-arr">⌄</span>
+      </div>
+      <div class="coll-body">
+        <div class="course-bar"><div class="course-bar-top"><span>Administração</span><span>5 projetos</span></div><div class="bar-track"><div class="bar-fill" style="width:82%"></div></div></div>
+        <div class="course-bar"><div class="course-bar-top"><span>Eng. de Produção</span><span>4 projetos</span></div><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div></div>
+        <div class="course-bar"><div class="course-bar-top"><span>Direito</span><span>3 projetos</span></div><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div></div>
+        <div class="course-bar"><div class="course-bar-top"><span>Psicologia</span><span>2 projetos</span></div><div class="bar-track"><div class="bar-fill" style="width:38%"></div></div></div>
+        <div class="course-bar"><div class="course-bar-top"><span>Contabilidade</span><span>2 projetos</span></div><div class="bar-track"><div class="bar-fill" style="width:38%"></div></div></div>
+        <div class="course-bar"><div class="course-bar-top"><span>Sistemas de Info.</span><span>1 projeto</span></div><div class="bar-track"><div class="bar-fill" style="width:20%"></div></div></div>
+      </div>
+    </div>
+
+    <!-- COMO FUNCIONA -->
+    <div class="sidebar-card" id="como-funciona">
+      <div class="coll-hdr" onclick="toggleColl(this)">
+        <h3>⚙️ Como Funciona</h3>
+        <span class="coll-arr">⌄</span>
+      </div>
+      <div class="coll-body">
+        <div class="steps">
+          <div class="step"><div class="step-num">1</div><div><p class="step-title">Empresa cadastra o problema</p><p class="step-desc">Descreve o desafio, área afetada e solução esperada.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div><p class="step-title">CIAPE analisa e encaminha</p><p class="step-desc">Avalia viabilidade e direciona ao curso adequado.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div><p class="step-title">Curso propõe solução</p><p class="step-desc">Via projeto de aula, extensão, pesquisa ou consultoria.</p></div></div>
+          <div class="step"><div class="step-num">4</div><div><p class="step-title">Entrega e documentação</p><p class="step-desc">Resultado entregue à empresa e registrado academicamente.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- FAB MOBILE -->
+<button class="fab" onclick="openFormModal()">
+  <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  Cadastrar Problema
+</button>
+
+<!-- MODAL DETALHE -->
+<div class="modal-overlay" id="detailModal" onclick="closeIfOverlay(event,'detailModal')">
+  <div class="modal">
+    <div class="modal-handle"><span></span></div>
+    <button class="modal-close" onclick="closeModal('detailModal')">✕</button>
+    <div id="detailBody"></div>
+  </div>
+</div>
+
+<!-- MODAL FORM -->
+<div class="modal-overlay" id="formModal" onclick="closeIfOverlay(event,'formModal')">
+  <div class="modal">
+    <div class="modal-handle"><span></span></div>
+    <button class="modal-close" onclick="closeModal('formModal')">✕</button>
+    <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(18px,4vw,22px);margin-bottom:4px;letter-spacing:-.4px;padding-right:36px">Cadastrar Problema</h2>
+    <p style="color:var(--muted);font-size:13px;font-weight:300;margin-bottom:18px">O CIAPE entrará em contato em até 48h.</p>
+    <div class="form-grid">
+      <div class="form-group"><label>Empresa <span class="req">*</span></label><input type="text" id="fm-empresa" placeholder="Razão social"></div>
+      <div class="form-group"><label>CNPJ / CPF</label><input type="text" id="fm-cnpj" placeholder="00.000.000/0001-00"></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Responsável <span class="req">*</span></label><input type="text" id="fm-responsavel" placeholder="Nome completo"></div>
+      <div class="form-group"><label>Cargo</label><input type="text" id="fm-cargo" placeholder="Ex.: Gerente de RH"></div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>E-mail <span class="req">*</span></label><input type="email" id="fm-email" placeholder="email@empresa.com"></div>
+      <div class="form-group"><label>Telefone</label><input type="tel" id="fm-tel" placeholder="(44) 9 0000-0000"></div>
+    </div>
+    <div class="form-group"><label>Título do Problema <span class="req">*</span></label><input type="text" id="fm-titulo" placeholder="Uma frase que resume o desafio principal"></div>
+    <div class="form-grid">
+      <div class="form-group"><label>Área Afetada <span class="req">*</span></label>
+        <select id="fm-area"><option value="">Selecione…</option><option>Gestão / Administração</option><option>Recursos Humanos</option><option>Financeiro / Contábil</option><option>Jurídico / Compliance</option><option>Marketing / Vendas</option><option>Produção / Operações</option><option>Logística / Supply Chain</option><option>TI / Tecnologia</option><option>Saúde / Segurança</option><option>Engenharia / Infraestrutura</option><option>Sustentabilidade / Ambiental</option><option>Outro</option></select>
+      </div>
+      <div class="form-group"><label>Setor</label>
+        <select id="fm-setor"><option value="">Selecione…</option><option>Indústria</option><option>Comércio</option><option>Serviços</option><option>Agronegócio</option><option>Saúde</option><option>Educação</option><option>Tecnologia</option><option>Outro</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Descrição detalhada <span class="req">*</span></label><textarea id="fm-descricao" rows="5" placeholder="O que acontece, há quanto tempo, impacto estimado, o que já foi tentado…"></textarea></div>
+    <div class="form-group"><label>Impacto Estimado</label><input type="text" id="fm-impacto" placeholder="Ex.: perda de 15% na produtividade, custo R$ 30k/mês…"></div>
+    <div class="form-group"><label>Tipo de Solução Esperada</label>
+      <div class="checkbox-group" style="display:grid;grid-template-columns:1fr 1fr;gap:7px">
+        <label class="checkbox-item"><input type="checkbox" id="fm-cb1" value="Projeto de Aula"> Projeto de Aula</label>
+        <label class="checkbox-item"><input type="checkbox" id="fm-cb2" value="Extensão"> Extensão</label>
+        <label class="checkbox-item"><input type="checkbox" id="fm-cb3" value="Pesquisa Aplicada"> Pesquisa Aplicada</label>
+        <label class="checkbox-item"><input type="checkbox" id="fm-cb4" value="Consultoria"> Consultoria</label>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group"><label>Urgência</label>
+        <select id="fm-urgencia"><option value="">Selecione</option><option>Alta — imediata</option><option>Média — 3 meses</option><option>Baixa — longo prazo</option></select>
+      </div>
+      <div class="form-group"><label>Disponibilidade</label>
+        <select id="fm-reuniao"><option value="">Selecione</option><option>Presencial na empresa</option><option>Presencial na UNIPAR</option><option>Videoconferência</option><option>Indiferente</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Observações</label><textarea id="fm-obs" rows="3" placeholder="Documentos, confidencialidade, parcerias com a UNIPAR…"></textarea></div>
+    <button class="submit-btn" onclick="submitProblemFull()">Enviar ao CIAPE →</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span style="font-size:17px;flex-shrink:0">✅</span>
+  <span id="toastMsg">Problema cadastrado!</span>
+</div>
+
+<script>
+const problems=[
+  {id:1,empresa:"Metalúrgica Santa Fé",setor:"Indústria",titulo:"Alto índice de rotatividade na linha de produção",area:"Recursos Humanos",descricao:"Nos últimos 12 meses, o turnover na linha de produção ultrapassou 38%, gerando custos elevados de treinamento e perda de produtividade. Pesquisas de clima foram realizadas sem ação estruturada de retenção.",impacto:"Custo estimado de R$ 45.000/mês em reposição e treinamento",urgencia:"Alta",tiposSolucao:["Projeto de Aula","Extensão"],contato:"Márcia Oliveira — RH",status:"aberto",data:"14/04/2025",cursoSugerido:"Psicologia, Administração"},
+  {id:2,empresa:"Agropecuária Horizonte",setor:"Agronegócio",titulo:"Ausência de controle financeiro para pequenas safras",area:"Financeiro / Contábil",descricao:"A empresa não possui software de controle de custos por talhão. Planilhas inconsistentes não permitem projeção de resultado por cultura. Busca-se modelo simplificado de gestão financeira rural.",impacto:"Impossibilidade de decisões de investimento com embasamento",urgencia:"Média",tiposSolucao:["Projeto de Aula","Consultoria"],contato:"Roberto Antunes — Sócio",status:"em-andamento",data:"02/04/2025",cursoSugerido:"Ciências Contábeis, Sistemas de Informação"},
+  {id:3,empresa:"Clínica Saúde+ Cianorte",setor:"Saúde",titulo:"Absenteísmo elevado na equipe administrativa",area:"Saúde / Segurança",descricao:"O absenteísmo cresceu 22% em 6 meses, com destaque para afastamentos por ansiedade e burnout. A clínica não possui programa de saúde mental para seus próprios colaboradores.",impacto:"Queda na qualidade do atendimento e sobrecarga dos demais",urgencia:"Alta",tiposSolucao:["Extensão","Pesquisa Aplicada"],contato:"Dr. Fábio Moraes — Diretor",status:"aberto",data:"18/04/2025",cursoSugerido:"Psicologia, Enfermagem"},
+  {id:4,empresa:"Distribuidora JC Atacado",setor:"Comércio",titulo:"Falta de identidade de marca e presença digital",area:"Marketing / Vendas",descricao:"Empresa com 18 anos de mercado não possui logotipo atualizado, site ou presença em redes sociais. Com novos concorrentes regionais, a invisibilidade digital impacta o faturamento.",impacto:"Perda estimada de 12% de clientes B2C nos últimos 2 anos",urgencia:"Média",tiposSolucao:["Projeto de Aula"],contato:"Jonas Carvalho — Proprietário",status:"concluido",data:"10/03/2025",cursoSugerido:"Publicidade e Propaganda, Administração"}
+];
+const statusLabel={aberto:'Aberto','em-andamento':'Em Andamento',concluido:'Concluído'};
+const urgColor={Alta:'#E05252',Média:'#E8B830',Baixa:'#2ECC8A'};
+let currentFilter='todos',currentSearch='';
+
+function renderCards(){
+  const list=document.getElementById('problemsList');
+  const noRes=document.getElementById('noResults');
+  const q=currentSearch.toLowerCase();
+  const filtered=problems.filter(p=>{
+    const mF=currentFilter==='todos'||p.status===currentFilter;
+    const mS=!q||p.empresa.toLowerCase().includes(q)||p.titulo.toLowerCase().includes(q)||p.area.toLowerCase().includes(q);
+    return mF&&mS;
+  });
+  list.innerHTML='';
+  noRes.style.display=filtered.length?'none':'block';
+  filtered.forEach((p,i)=>{
+    const c=document.createElement('div');
+    c.className='problem-card';c.style.animationDelay=(i*.06)+'s';c.onclick=()=>openDetail(p.id);
+    c.innerHTML=`<div class="card-top"><span class="card-company">${p.empresa}</span><span class="status-badge ${p.status}">${statusLabel[p.status]}</span></div>
+    <div class="card-problem-title">${p.titulo}</div>
+    <div class="card-desc">${p.descricao}</div>
+    <div class="card-tags"><span class="tag area">${p.area}</span><span class="tag">${p.setor}</span>${p.tiposSolucao.map(t=>`<span class="tag">${t}</span>`).join('')}<span class="tag" style="color:${urgColor[p.urgencia]};border-color:${urgColor[p.urgencia]}33">● ${p.urgencia}</span></div>
+    <div class="card-meta"><div class="card-meta-left"><span class="meta-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${p.data}</span><span class="meta-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${p.contato.split('—')[0].trim()}</span></div><span class="card-cta">Ver Detalhes →</span></div>`;
+    list.appendChild(c);
+  });
+  document.getElementById('stat-total').textContent=problems.length;
+  document.getElementById('stat-abertos').textContent=problems.filter(p=>p.status==='aberto').length;
+  document.getElementById('stat-andamento').textContent=problems.filter(p=>p.status==='em-andamento').length;
+  document.getElementById('stat-concluidos').textContent=problems.filter(p=>p.status==='concluido').length;
+}
+function filterCards(s,btn){currentFilter=s;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCards()}
+function searchCards(v){currentSearch=v;renderCards()}
+
+function openDetail(id){
+  const p=problems.find(x=>x.id===id);if(!p)return;
+  document.getElementById('detailBody').innerHTML=`
+    <div class="modal-badge-row"><span class="status-badge ${p.status}">${statusLabel[p.status]}</span><span class="tag area">${p.area}</span><span class="tag">${p.setor}</span><span class="tag" style="color:${urgColor[p.urgencia]};border-color:${urgColor[p.urgencia]}33">● Urgência ${p.urgencia}</span></div>
+    <div class="modal-company">${p.empresa}</div>
+    <div class="modal-problem">${p.titulo}</div>
+    <div class="modal-grid"><div class="modal-field"><div class="label">Área</div><div class="value">${p.area}</div></div><div class="modal-field"><div class="label">Setor</div><div class="value">${p.setor}</div></div><div class="modal-field"><div class="label">Cadastrado em</div><div class="value">${p.data}</div></div><div class="modal-field"><div class="label">Responsável</div><div class="value">${p.contato.split('—')[0].trim()}</div></div></div>
+    <div class="modal-section"><h4>Descrição do Problema</h4><p>${p.descricao}</p></div>
+    <div class="modal-section"><h4>Impacto Estimado</h4><p>${p.impacto}</p></div>
+    <div class="modal-section"><h4>Tipos de Solução Aceitos</h4><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:4px">${p.tiposSolucao.map(t=>`<span class="tag" style="color:var(--gold);border-color:rgba(201,150,26,.2)">✦ ${t}</span>`).join('')}</div></div>
+    <div class="modal-section"><h4>Cursos Sugeridos pelo CIAPE</h4><p>${p.cursoSugerido}</p></div>
+    <button class="modal-propose-btn" onclick="showToast('Proposta enviada ao CIAPE! O coordenador entrará em contato.')">Propor Solução para este Problema →</button>`;
+  openModal('detailModal');
+}
+
+function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
+function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
+function closeIfOverlay(e,id){if(e.target===document.getElementById(id))closeModal(id)}
+function openFormModal(){openModal('formModal')}
+
+function toggleColl(hdr){hdr.classList.toggle('open');hdr.nextElementSibling.classList.toggle('open')}
+function initColls(){if(window.innerWidth>=900){document.querySelectorAll('.coll-body').forEach(b=>b.classList.add('open'));document.querySelectorAll('.coll-hdr').forEach(h=>h.classList.add('open'))}}
+window.addEventListener('resize',initColls);
+
+function toggleDrawer(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobileDrawer').classList.toggle('open')}
+function closeDrawer(){document.getElementById('hamburger').classList.remove('open');document.getElementById('mobileDrawer').classList.remove('open')}
+
+function scrollTo(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+
+function submitProblem(){
+  const e=document.getElementById('sb-empresa').value.trim();
+  const t=document.getElementById('sb-titulo').value.trim();
+  const a=document.getElementById('sb-area').value;
+  const d=document.getElementById('sb-descricao').value.trim();
+  if(!e||!t||!a||!d){alert('Preencha: Empresa, Título, Área e Descrição.');return}
+  const tipos=[];
+  if(document.getElementById('cb-aula').checked)tipos.push('Projeto de Aula');
+  if(document.getElementById('cb-extensao').checked)tipos.push('Extensão');
+  if(document.getElementById('cb-pesquisa').checked)tipos.push('Pesquisa Aplicada');
+  if(document.getElementById('cb-consultoria').checked)tipos.push('Consultoria');
+  const u=document.getElementById('sb-urgencia').value||'Média';
+  const c=document.getElementById('sb-contato').value||'—';
+  const now=new Date();const dt=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+  problems.unshift({id:Date.now(),empresa:e,titulo:t,area:a,descricao:d,setor:'Outro',impacto:'A definir',urgencia:u,tiposSolucao:tipos.length?tipos:['A definir'],contato:c,status:'aberto',data:dt,cursoSugerido:'A ser analisado pelo CIAPE'});
+  ['sb-empresa','sb-titulo','sb-descricao','sb-contato','sb-email'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('sb-area').value='';document.getElementById('sb-urgencia').value='';
+  ['cb-aula','cb-extensao','cb-pesquisa','cb-consultoria'].forEach(id=>document.getElementById(id).checked=false);
+  renderCards();showToast('Problema cadastrado! CIAPE entrará em contato em até 48h.');
+}
+
+function submitProblemFull(){
+  const e=document.getElementById('fm-empresa').value.trim();
+  const t=document.getElementById('fm-titulo').value.trim();
+  const a=document.getElementById('fm-area').value;
+  const d=document.getElementById('fm-descricao').value.trim();
+  const em=document.getElementById('fm-email').value.trim();
+  if(!e||!t||!a||!d||!em){alert('Preencha: Empresa, Título, Área, Descrição e E-mail.');return}
+  const tipos=[];['fm-cb1','fm-cb2','fm-cb3','fm-cb4'].forEach(id=>{const el=document.getElementById(id);if(el.checked)tipos.push(el.value)});
+  const ur=document.getElementById('fm-urgencia').value;
+  let u='Média';if(ur.startsWith('Alta'))u='Alta';else if(ur.startsWith('Baixa'))u='Baixa';
+  const r=document.getElementById('fm-responsavel').value||'—';
+  const i=document.getElementById('fm-impacto').value||'A definir';
+  const s=document.getElementById('fm-setor').value||'Outro';
+  const now=new Date();const dt=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+  problems.unshift({id:Date.now(),empresa:e,titulo:t,area:a,descricao:d,setor:s,impacto:i,urgencia:u,tiposSolucao:tipos.length?tipos:['A definir'],contato:r,status:'aberto',data:dt,cursoSugerido:'A ser analisado pelo CIAPE'});
+  closeModal('formModal');renderCards();showToast('Problema enviado! CIAPE retornará em até 48h no e-mail informado.');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4500);
+}
+
+initColls();renderCards();
+</script>
+</body>
+</html>
