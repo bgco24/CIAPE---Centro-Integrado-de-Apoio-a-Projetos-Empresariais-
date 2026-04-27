@@ -748,11 +748,12 @@ header {
   background:rgba(0,0,0,.45);
   backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
   z-index:100;
-  display:flex; align-items:flex-end; justify-content:center; padding:0;
-  opacity:0; pointer-events:none; transition:opacity .25s;
+  display:none; /* JS controla: none → flex ao abrir */
+  align-items:flex-end; justify-content:center; padding:0;
+  opacity:0; transition:opacity .25s;
 }
 @media(min-width:600px){ .modal-overlay{align-items:center;padding:20px} }
-.modal-overlay.open { opacity:1; pointer-events:all }
+.modal-overlay.open { opacity:1; }
 
 .modal {
   background:var(--white); width:100%;
@@ -1228,8 +1229,18 @@ function openDetail(id){
 }
 
 /* ─── MODAL HELPERS ─── */
-function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
-function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
+function openModal(id){
+  const el=document.getElementById(id);
+  el.style.display='flex';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('open')));
+  document.body.style.overflow='hidden';
+}
+function closeModal(id){
+  const el=document.getElementById(id);
+  el.classList.remove('open');
+  setTimeout(()=>{el.style.display='none';},280);
+  document.body.style.overflow='';
+}
 function closeIfOverlay(e,id){if(e.target===document.getElementById(id))closeModal(id)}
 function openFormModal(){openModal('formModal')}
 
@@ -1295,9 +1306,26 @@ async function submitProblemFull(){
   const disponibilidade=document.getElementById('fm-reuniao').value;
   const obs=document.getElementById('fm-obs').value.trim();
 
-  if(!e||!titulo||!area||!descricao||!email){
-    alert('Preencha: Empresa, Título, Área, Descrição e E-mail.');
-    return;
+  /* ── Validação campo a campo ── */
+  const obrigatorios = [
+    {id:'fm-empresa',  label:'Empresa'},
+    {id:'fm-email',    label:'E-mail'},
+    {id:'fm-titulo',   label:'Título do Problema'},
+    {id:'fm-area',     label:'Área Afetada'},
+    {id:'fm-descricao',label:'Descrição'},
+  ];
+  for(const campo of obrigatorios){
+    const el = document.getElementById(campo.id);
+    if(!el){ alert('Erro interno: campo '+campo.id+' não encontrado.'); return; }
+    const val = el.value ? el.value.trim() : '';
+    if(!val){
+      el.focus();
+      el.style.borderColor='#C8102E';
+      el.style.boxShadow='0 0 0 3px rgba(200,16,46,.18)';
+      setTimeout(()=>{el.style.borderColor='';el.style.boxShadow='';},2500);
+      alert('Preencha o campo obrigatório: ' + campo.label);
+      return;
+    }
   }
 
   const tipos=[];
