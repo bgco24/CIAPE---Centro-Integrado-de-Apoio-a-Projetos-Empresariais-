@@ -1126,18 +1126,74 @@ function isGoogleSheetsConfigured(){
 
 async function sendToGoogleSheets(payload){
   if(!isGoogleSheetsConfigured()) return {ok:false, reason:'not-configured'};
-  try{
-    await fetch(GOOGLE_SCRIPT_URL,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify(payload)
-    });
-    return {ok:true};
-  }catch(err){
-    console.error('Erro ao enviar para Google Sheets:', err);
-    return {ok:false, reason:'network-error'};
-  }
+
+  return new Promise((resolve)=>{
+    /* Usa JSONP: cria um <form> e submete via POST em iframe oculto.
+       É a única forma garantida de enviar POST para Apps Script sem CORS. */
+    try {
+      const iframeName = 'gs_frame_' + Date.now();
+      const iframe = document.createElement('iframe');
+      iframe.name = iframeName;
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = GOOGLE_SCRIPT_URL;
+      form.target = iframeName;
+      form.style.display = 'none';
+
+      /* Envia todos os campos como inputs individuais */
+      const fields = {
+        empresa:        payload.empresa        || '',
+        cnpj:           payload.cnpj           || '',
+        responsavel:    payload.responsavel    || payload.contato || '',
+        cargo:          payload.cargo          || '',
+        email:          payload.email          || '',
+        telefone:       payload.telefone       || '',
+        titulo:         payload.titulo         || '',
+        area:           payload.area           || '',
+        setor:          payload.setor          || '',
+        descricao:      payload.descricao      || '',
+        impacto:        payload.impacto        || '',
+        tiposSolucao:   Array.isArray(payload.tiposSolucao) ? payload.tiposSolucao.join(', ') : (payload.tiposSolucao||''),
+        urgencia:       payload.urgencia       || '',
+        disponibilidade:payload.disponibilidade|| '',
+        sigilo:         payload.sigilo         ? 'SIM' : 'NÃO',
+        observacoes:    payload.observacoes    || '',
+        palestra:       payload.palestra       ? 'SIM' : 'NÃO',
+        palestraTema:   payload.palestraTema   || '',
+        palestraPublico:payload.palestraPublico|| '',
+        palestraQtd:    payload.palestraQtd    || '',
+        palestraData:   payload.palestraData   || '',
+        palestraFormato:payload.palestraFormato|| '',
+        origem:         payload.origem         || 'Site CIAPE UNIPAR Cianorte'
+      };
+
+      Object.entries(fields).forEach(([k,v])=>{
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = k;
+        input.value = v;
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+
+      /* Limpa após 5s */
+      setTimeout(()=>{
+        try{ document.body.removeChild(form); } catch(e){}
+        try{ document.body.removeChild(iframe); } catch(e){}
+      }, 5000);
+
+      form.submit();
+      resolve({ok:true});
+
+    } catch(err){
+      console.error('Erro ao enviar:', err);
+      resolve({ok:false, reason:'error'});
+    }
+  });
 }
 
 /* ─── RENDER ─── */
