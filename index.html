@@ -1118,82 +1118,48 @@ let currentFilter='todos', currentSearch='';
    4) Publique como Web App: Executar como você / Acesso: qualquer pessoa.
    5) Cole a URL gerada abaixo, substituindo o texto entre aspas.
 */
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxx08VRsLtuf4GKnWK_2C7AKOsypmJdd2exfyN9z2e-Eljqc7LFrsSvkUgMvTmJm_Bk/exec';
-
-function isGoogleSheetsConfigured(){
-  return GOOGLE_SCRIPT_URL && !GOOGLE_SCRIPT_URL.includes('COLE_AQUI');
-}
+const FORMSPREE_URL = 'https://formspree.io/f/mwvadleg';
 
 async function sendToGoogleSheets(payload){
-  if(!isGoogleSheetsConfigured()) return {ok:false, reason:'not-configured'};
+  try {
+    const body = new FormData();
+    body.append('_subject', 'CIAPE - Novo problema cadastrado: ' + (payload.titulo || ''));
+    body.append('empresa',         payload.empresa        || '');
+    body.append('cnpj',            payload.cnpj           || '');
+    body.append('responsavel',     payload.responsavel    || payload.contato || '');
+    body.append('cargo',           payload.cargo          || '');
+    body.append('email',           payload.email          || '');
+    body.append('telefone',        payload.telefone       || '');
+    body.append('titulo',          payload.titulo         || '');
+    body.append('area',            payload.area           || '');
+    body.append('setor',           payload.setor          || '');
+    body.append('descricao',       payload.descricao      || '');
+    body.append('impacto',         payload.impacto        || '');
+    body.append('tiposSolucao',    Array.isArray(payload.tiposSolucao) ? payload.tiposSolucao.join(', ') : (payload.tiposSolucao||''));
+    body.append('urgencia',        payload.urgencia       || '');
+    body.append('disponibilidade', payload.disponibilidade|| '');
+    body.append('sigilo',          payload.sigilo         ? 'SIM' : 'NAO');
+    body.append('observacoes',     payload.observacoes    || '');
+    body.append('palestra',        payload.palestra       ? 'SIM' : 'NAO');
+    body.append('palestraTema',    payload.palestraTema   || '');
+    body.append('palestraPublico', payload.palestraPublico|| '');
+    body.append('palestraQtd',     payload.palestraQtd    || '');
+    body.append('palestraData',    payload.palestraData   || '');
+    body.append('palestraFormato', payload.palestraFormato|| '');
+    body.append('origem',          'Site CIAPE UNIPAR Cianorte');
 
-  return new Promise((resolve)=>{
-    /* Usa JSONP: cria um <form> e submete via POST em iframe oculto.
-       É a única forma garantida de enviar POST para Apps Script sem CORS. */
-    try {
-      const iframeName = 'gs_frame_' + Date.now();
-      const iframe = document.createElement('iframe');
-      iframe.name = iframeName;
-      iframe.style.display = 'none';
-      document.body.appendChild(iframe);
+    const res = await fetch(FORMSPREE_URL, {
+      method: 'POST',
+      body: body,
+      headers: { 'Accept': 'application/json' }
+    });
 
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = GOOGLE_SCRIPT_URL;
-      form.target = iframeName;
-      form.style.display = 'none';
-
-      /* Envia todos os campos como inputs individuais */
-      const fields = {
-        empresa:        payload.empresa        || '',
-        cnpj:           payload.cnpj           || '',
-        responsavel:    payload.responsavel    || payload.contato || '',
-        cargo:          payload.cargo          || '',
-        email:          payload.email          || '',
-        telefone:       payload.telefone       || '',
-        titulo:         payload.titulo         || '',
-        area:           payload.area           || '',
-        setor:          payload.setor          || '',
-        descricao:      payload.descricao      || '',
-        impacto:        payload.impacto        || '',
-        tiposSolucao:   Array.isArray(payload.tiposSolucao) ? payload.tiposSolucao.join(', ') : (payload.tiposSolucao||''),
-        urgencia:       payload.urgencia       || '',
-        disponibilidade:payload.disponibilidade|| '',
-        sigilo:         payload.sigilo         ? 'SIM' : 'NÃO',
-        observacoes:    payload.observacoes    || '',
-        palestra:       payload.palestra       ? 'SIM' : 'NÃO',
-        palestraTema:   payload.palestraTema   || '',
-        palestraPublico:payload.palestraPublico|| '',
-        palestraQtd:    payload.palestraQtd    || '',
-        palestraData:   payload.palestraData   || '',
-        palestraFormato:payload.palestraFormato|| '',
-        origem:         payload.origem         || 'Site CIAPE UNIPAR Cianorte'
-      };
-
-      Object.entries(fields).forEach(([k,v])=>{
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = k;
-        input.value = v;
-        form.appendChild(input);
-      });
-
-      document.body.appendChild(form);
-
-      /* Limpa após 5s */
-      setTimeout(()=>{
-        try{ document.body.removeChild(form); } catch(e){}
-        try{ document.body.removeChild(iframe); } catch(e){}
-      }, 5000);
-
-      form.submit();
-      resolve({ok:true});
-
-    } catch(err){
-      console.error('Erro ao enviar:', err);
-      resolve({ok:false, reason:'error'});
-    }
-  });
+    const json = await res.json();
+    return { ok: json.ok || false };
+  } catch(err) {
+    console.error('Erro Formspree:', err);
+    return { ok: false };
+  }
 }
 
 /* ─── RENDER ─── */
