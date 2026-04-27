@@ -4,289 +4,971 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>CIAPE — Banco de Problemas e Soluções | UNIPAR</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{
-  --navy:#0A1628;--navy-mid:#0F2044;--navy-light:#1A3260;
-  --gold:#C9961A;--gold-b:#E8B830;--gold-pale:#F5D875;
-  --white:#FAFAF8;--muted:#8A9AB5;--border:#1E3155;
-  --success:#2ECC8A;--danger:#E05252;--tag-bg:rgba(201,150,26,.12);
-  --r-sm:8px;--r-md:12px;--r-lg:16px;
-  --header-h:60px;--pad:16px;
+/* ═══════════════════════════════════════════════
+   UNIPAR DESIGN TOKENS
+   Cores extraídas do site oficial www.unipar.br
+═══════════════════════════════════════════════ */
+:root {
+  /* Brand */
+  --red:        #C8102E;   /* vermelho UNIPAR principal */
+  --red-dark:   #A00D24;   /* hover / pressed */
+  --red-light:  #F5E5E8;   /* backgrounds suaves */
+  --red-mid:    rgba(200,16,46,.08);
+
+  /* Neutros */
+  --white:      #FFFFFF;
+  --off-white:  #F7F8FA;
+  --grey-50:    #F0F2F5;
+  --grey-100:   #E4E7EC;
+  --grey-200:   #CBD2D9;
+  --grey-400:   #9AA5B4;
+  --grey-600:   #52606D;
+  --grey-800:   #2D3748;
+  --grey-900:   #1A202C;
+
+  /* Status */
+  --green:      #0E9F6E;
+  --green-bg:   #E3F5EE;
+  --amber:      #D97706;
+  --amber-bg:   #FEF3C7;
+  --blue:       #1D6FA4;
+  --blue-bg:    #E8F2FA;
+
+  /* Layout */
+  --header-h:   68px;
+  --pad:        16px;
+  --r-xs:       4px;
+  --r-sm:       8px;
+  --r-md:       12px;
+  --r-lg:       16px;
+  --r-xl:       20px;
+
+  /* Shadow */
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:  0 4px 12px rgba(0,0,0,.10), 0 2px 4px rgba(0,0,0,.06);
+  --shadow-lg:  0 10px 30px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06);
 }
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{background:var(--navy);color:var(--white);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 70% 10%,rgba(201,150,26,.07) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 10% 80%,rgba(26,50,96,.6) 0%,transparent 70%);pointer-events:none;z-index:0}
-button{cursor:pointer;font-family:inherit}
-input,select,textarea{font-family:inherit}
 
-/* HEADER */
-header{position:sticky;top:0;z-index:50;height:var(--header-h);padding:0 var(--pad);display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(10,22,40,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
-.logo-block{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
-.logo-badge{width:36px;height:36px;flex-shrink:0;background:linear-gradient(135deg,var(--gold),var(--gold-b));border-radius:9px;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-weight:800;font-size:12px;color:var(--navy);letter-spacing:-.5px}
-.logo-text{display:flex;flex-direction:column;line-height:1.1;min-width:0}
-.logo-text strong{font-family:'Syne',sans-serif;font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.logo-text span{font-size:10px;color:var(--muted);font-weight:300;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@media(max-width:480px){.logo-text span{display:none}}
-.header-nav{display:flex;align-items:center;gap:6px;flex-shrink:0}
-.nav-btn{padding:8px 14px;border-radius:var(--r-sm);font-size:13px;font-weight:500;border:none;transition:all .2s;white-space:nowrap}
-.nav-btn.ghost{background:transparent;color:var(--muted)}
-.nav-btn.ghost:hover{color:var(--white);background:rgba(255,255,255,.05)}
-.nav-btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold-b));color:var(--navy);font-weight:700}
-.nav-btn.primary:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 4px 16px rgba(201,150,26,.3)}
+/* ═══════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════ */
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0 }
+html { scroll-behavior:smooth; -webkit-text-size-adjust:100% }
+body {
+  background: var(--off-white);
+  color: var(--grey-900);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+button { cursor:pointer; font-family:inherit }
+input,select,textarea { font-family:inherit }
 
-/* HAMBURGER */
-.hamburger{display:none;width:36px;height:36px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:var(--r-sm);align-items:center;justify-content:center;flex-direction:column;gap:5px;flex-shrink:0}
-.hamburger span{display:block;width:18px;height:2px;background:var(--white);border-radius:2px;transition:all .25s}
-.hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
-.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
-.hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
-@media(max-width:700px){.hamburger{display:flex}.header-nav .nav-btn.ghost{display:none}.header-nav .nav-btn.primary{display:none}}
+/* ═══════════════════════════════════════════════
+   TOP BAR (institutional strip)
+═══════════════════════════════════════════════ */
+.top-bar {
+  background: var(--grey-900);
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 32px;
+  gap: 20px;
+}
+@media(max-width:600px){.top-bar{display:none}}
+.top-bar a {
+  color: var(--grey-400);
+  font-size: 11.5px;
+  text-decoration: none;
+  font-weight: 400;
+  letter-spacing:.2px;
+  transition: color .15s;
+}
+.top-bar a:hover { color:var(--white) }
+.top-bar-sep { color: var(--grey-600); font-size:11px }
 
-/* MOBILE DRAWER */
-.mobile-drawer{position:fixed;top:var(--header-h);left:0;right:0;background:var(--navy-mid);border-bottom:1px solid var(--border);z-index:49;padding:14px var(--pad);display:flex;flex-direction:column;gap:8px;transform:translateY(-110%);transition:transform .28s cubic-bezier(.4,0,.2,1)}
-.mobile-drawer.open{transform:translateY(0)}
-.mobile-drawer .nav-btn{width:100%;text-align:center;padding:12px}
+/* ═══════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════ */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-h);
+  background: var(--white);
+  border-bottom: 3px solid var(--red);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+  gap: 16px;
+  justify-content: space-between;
+}
+@media(max-width:768px){header{padding:0 var(--pad)}}
 
-/* HERO */
-.hero{position:relative;z-index:5;padding:40px var(--pad) 36px;max-width:1200px;margin:0 auto}
-@media(min-width:768px){.hero{padding:60px 40px 48px}}
-.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--tag-bg);border:1px solid rgba(201,150,26,.25);border-radius:100px;padding:5px 14px;font-size:11px;font-weight:500;color:var(--gold-b);text-transform:uppercase;letter-spacing:1px;margin-bottom:18px}
-.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold-b);animation:pulse 2s infinite}
+/* Logo UNIPAR SVG inline */
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-shrink: 0;
+  text-decoration: none;
+}
+.logo-unipar {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.logo-unipar svg {
+  height: 38px;
+  width: auto;
+}
+.logo-divider {
+  width: 1px;
+  height: 32px;
+  background: var(--grey-200);
+  flex-shrink:0;
+}
+.logo-ciape {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+.logo-ciape strong {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--red);
+  letter-spacing: -.1px;
+}
+.logo-ciape span {
+  font-size: 10px;
+  color: var(--grey-400);
+  font-weight: 400;
+  letter-spacing: .2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+@media(max-width:500px){.logo-divider,.logo-ciape{display:none}}
+
+/* Nav */
+.header-nav { display:flex; align-items:center; gap:6px; flex-shrink:0 }
+.nav-btn {
+  padding: 8px 16px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  font-weight: 500;
+  border: none;
+  transition: all .2s;
+  white-space: nowrap;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-btn.ghost {
+  background: transparent;
+  color: var(--grey-600);
+}
+.nav-btn.ghost:hover { color:var(--grey-900); background:var(--grey-50) }
+.nav-btn.outline {
+  background: transparent;
+  color: var(--red);
+  border: 1.5px solid var(--red);
+}
+.nav-btn.outline:hover { background:var(--red-light) }
+.nav-btn.primary {
+  background: var(--red);
+  color: var(--white);
+  font-weight: 600;
+  letter-spacing: .1px;
+}
+.nav-btn.primary:hover {
+  background: var(--red-dark);
+  box-shadow: 0 4px 14px rgba(200,16,46,.3);
+  transform: translateY(-1px);
+}
+.nav-btn.primary:active { transform:translateY(0) }
+.nav-btn svg { flex-shrink:0 }
+
+/* Hamburger */
+.hamburger {
+  display: none;
+  width: 38px; height: 38px;
+  background: var(--grey-50);
+  border: 1px solid var(--grey-100);
+  border-radius: var(--r-sm);
+  align-items: center; justify-content: center;
+  flex-direction: column; gap:5px;
+  flex-shrink:0;
+}
+.hamburger span {
+  display:block; width:18px; height:2px;
+  background:var(--grey-800); border-radius:2px;
+  transition: all .25s;
+}
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg) }
+.hamburger.open span:nth-child(2){ opacity:0; transform:scaleX(0) }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg) }
+@media(max-width:700px){
+  .hamburger{display:flex}
+  .header-nav .nav-btn.ghost{display:none}
+  .header-nav .nav-btn.primary{display:none}
+  .header-nav .nav-btn.outline{display:none}
+}
+
+/* Mobile drawer */
+.mobile-drawer {
+  position:fixed;
+  top:var(--header-h);
+  left:0; right:0;
+  background:var(--white);
+  border-bottom: 3px solid var(--red);
+  box-shadow: var(--shadow-md);
+  z-index:49;
+  padding:12px var(--pad);
+  display:flex; flex-direction:column; gap:6px;
+  transform:translateY(-110%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+}
+.mobile-drawer.open { transform:translateY(0) }
+.mobile-drawer .nav-btn { width:100%; text-align:center; padding:11px; justify-content:center }
+
+/* ═══════════════════════════════════════════════
+   HERO SECTION
+═══════════════════════════════════════════════ */
+.hero {
+  background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 55%, #7A0A1A 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 52px 32px 48px;
+}
+@media(max-width:768px){ .hero{ padding:36px var(--pad) 32px } }
+
+/* decorative shapes */
+.hero::before {
+  content:'';
+  position:absolute; top:-60px; right:-80px;
+  width:320px; height:320px;
+  border-radius:50%;
+  background:rgba(255,255,255,.05);
+  pointer-events:none;
+}
+.hero::after {
+  content:'';
+  position:absolute; bottom:-80px; left:30%;
+  width:240px; height:240px;
+  border-radius:50%;
+  background:rgba(255,255,255,.04);
+  pointer-events:none;
+}
+.hero-inner {
+  max-width:1200px;
+  margin:0 auto;
+  position:relative; z-index:1;
+}
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:100px;
+  padding:4px 14px;
+  font-size:11px; font-weight:600; color:rgba(255,255,255,.9);
+  text-transform:uppercase; letter-spacing:1.2px;
+  margin-bottom:16px;
+}
+.hero-eyebrow::before {
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:#fff; animation:pulse 2s infinite;
+}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
-h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,5.5vw,50px);line-height:1.08;letter-spacing:-1px;margin-bottom:12px}
-h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold-pale));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.hero-sub{color:var(--muted);font-size:14.5px;font-weight:300;line-height:1.65;margin-bottom:26px;max-width:520px}
-.hero-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
-@media(min-width:480px){.hero-stats{display:flex;flex-wrap:wrap;gap:24px}}
-.stat{display:flex;flex-direction:column;gap:2px}
-.stat-val{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;color:var(--gold-b)}
-.stat-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
 
-/* MAIN */
-.main-wrap{position:relative;z-index:5;max-width:1200px;margin:0 auto;padding:0 var(--pad) 100px;display:flex;flex-direction:column;gap:20px}
-@media(min-width:900px){.main-wrap{padding:0 40px 80px;display:grid;grid-template-columns:1fr 360px;gap:28px;align-items:start}}
-.col-list{min-width:0}
-@media(max-width:899px){.col-list{order:1}.sidebar{order:2}}
+.hero h1 {
+  font-size: clamp(22px,4vw,40px);
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1.1;
+  letter-spacing: -.6px;
+  margin-bottom: 12px;
+  max-width: 600px;
+}
+.hero h1 span { color:rgba(255,255,255,.75) }
+.hero-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,.78);
+  font-weight: 400;
+  max-width: 520px;
+  line-height: 1.65;
+  margin-bottom: 32px;
+}
 
-/* SIDEBAR */
-.sidebar{display:flex;flex-direction:column;gap:14px}
-@media(min-width:900px){.sidebar{position:sticky;top:calc(var(--header-h) + 16px)}}
+/* Stats row */
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: var(--r-lg);
+  backdrop-filter: blur(8px);
+  overflow: hidden;
+  max-width: 560px;
+}
+.stat {
+  flex: 1;
+  min-width: 110px;
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-right: 1px solid rgba(255,255,255,.14);
+}
+.stat:last-child { border-right:none }
+.stat-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--white);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 10.5px;
+  color: rgba(255,255,255,.65);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+@media(max-width:480px){
+  .hero-stats{flex-direction:row;flex-wrap:wrap}
+  .stat{min-width:50%;flex:none;width:50%;border-bottom:1px solid rgba(255,255,255,.14)}
+  .stat:nth-child(2n){border-right:none}
+  .stat:nth-child(3),.stat:nth-child(4){border-bottom:none}
+}
 
-/* SECTION TITLE */
-.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:17px;letter-spacing:-.2px;margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+/* ═══════════════════════════════════════════════
+   BREADCRUMB / PAGE-TITLE BAND
+═══════════════════════════════════════════════ */
+.page-band {
+  background: var(--white);
+  border-bottom: 1px solid var(--grey-100);
+  padding: 0 32px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--grey-400);
+}
+@media(max-width:768px){ .page-band{padding:0 var(--pad)} }
+.page-band span { color:var(--grey-600); font-weight:500 }
+.page-band .sep { color:var(--grey-200) }
 
-/* FILTERS */
-.filters-bar{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;align-items:center}
-.filter-label{font-size:11px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
-.filter-chip{padding:6px 12px;border-radius:100px;font-size:12px;font-weight:500;border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .18s}
-.filter-chip:hover,.filter-chip.active{border-color:var(--gold);color:var(--gold-b);background:var(--tag-bg)}
-.search-wrap{width:100%;margin-top:4px;position:relative}
-@media(min-width:560px){.search-wrap{width:auto;margin-top:0;margin-left:auto}}
-.search-wrap input{width:100%;background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-sm);padding:9px 14px 9px 36px;color:var(--white);font-size:13.5px;outline:none;transition:border-color .2s;-webkit-appearance:none}
-@media(min-width:560px){.search-wrap input{width:210px}}
-.search-wrap input::placeholder{color:var(--muted)}
-.search-wrap input:focus{border-color:var(--gold)}
-.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+/* ═══════════════════════════════════════════════
+   MAIN LAYOUT
+═══════════════════════════════════════════════ */
+.main-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 32px 80px;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+@media(max-width:960px){
+  .main-wrap { grid-template-columns:1fr; padding:16px var(--pad) 100px }
+}
+.col-list { min-width:0 }
+@media(max-width:960px){ .col-list{order:1} .sidebar{order:2} }
 
-/* CARDS */
-.problems-list{display:flex;flex-direction:column;gap:12px}
-.problem-card{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px 20px;cursor:pointer;transition:border-color .2s,transform .2s,box-shadow .2s;position:relative;overflow:hidden}
-.problem-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:transparent;transition:background .2s;border-radius:var(--r-lg) 0 0 var(--r-lg)}
-.problem-card:hover{border-color:rgba(201,150,26,.35);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.3)}
-.problem-card:hover::before{background:var(--gold)}
-.problem-card:active{transform:translateY(0)}
-.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
-.card-company{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;letter-spacing:-.2px;line-height:1.2}
-.status-badge{padding:3px 10px;border-radius:100px;font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;flex-shrink:0}
-.status-badge.aberto{background:rgba(201,150,26,.15);color:var(--gold-b);border:1px solid rgba(201,150,26,.3)}
-.status-badge.em-andamento{background:rgba(46,204,138,.12);color:var(--success);border:1px solid rgba(46,204,138,.25)}
-.status-badge.concluido{background:rgba(138,154,181,.12);color:var(--muted);border:1px solid rgba(138,154,181,.2)}
-.card-problem-title{font-size:13.5px;font-weight:500;margin-bottom:7px;line-height:1.4}
-.card-desc{font-size:12.5px;color:var(--muted);font-weight:300;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:12px}
-.card-tags{display:flex;flex-wrap:wrap;gap:5px}
-.tag{padding:3px 9px;border-radius:6px;font-size:11px;font-weight:500;background:rgba(255,255,255,.05);color:var(--muted);border:1px solid rgba(255,255,255,.06)}
-.tag.area{background:rgba(26,50,96,.6);color:#7FA8D0;border-color:rgba(127,168,208,.15)}
-.card-meta{margin-top:12px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--border);padding-top:10px}
-.card-meta-left{display:flex;gap:14px;flex-wrap:wrap}
-.meta-item{display:flex;align-items:center;gap:4px}
-.card-cta{font-size:12px;color:var(--gold);font-weight:600;display:flex;align-items:center;gap:4px;transition:gap .15s;white-space:nowrap;flex-shrink:0}
-.problem-card:hover .card-cta{gap:8px}
-.no-results{display:none;text-align:center;padding:40px;color:var(--muted);font-size:14px}
+/* ═══════════════════════════════════════════════
+   SECTION HEADER
+═══════════════════════════════════════════════ */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--grey-900);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::before {
+  content:'';
+  display:block;
+  width:3px; height:18px;
+  background: var(--red);
+  border-radius:2px;
+  flex-shrink:0;
+}
+.section-count {
+  font-size:11.5px;
+  color:var(--grey-400);
+  font-weight:500;
+  background:var(--grey-50);
+  border:1px solid var(--grey-100);
+  border-radius:100px;
+  padding:2px 10px;
+}
 
-/* SIDEBAR CARDS */
-.sidebar-card{background:var(--navy-mid);border:1px solid var(--border);border-radius:var(--r-lg);padding:18px}
-.sidebar-card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:14.5px;letter-spacing:-.2px;margin-bottom:0}
+/* ═══════════════════════════════════════════════
+   FILTERS
+═══════════════════════════════════════════════ */
+.filters-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+  background: var(--white);
+  border: 1px solid var(--grey-100);
+  border-radius: var(--r-lg);
+  padding: 10px 14px;
+  box-shadow: var(--shadow-sm);
+}
+.filter-label {
+  font-size: 11px;
+  color: var(--grey-400);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+.filter-chips { display:flex; flex-wrap:wrap; gap:6px; flex:1 }
+.filter-chip {
+  padding: 5px 13px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1.5px solid var(--grey-200);
+  background: transparent;
+  color: var(--grey-600);
+  transition: all .16s;
+  cursor:pointer;
+}
+.filter-chip:hover { border-color:var(--red); color:var(--red); background:var(--red-light) }
+.filter-chip.active { border-color:var(--red); color:var(--white); background:var(--red); font-weight:600 }
 
-/* COLLAPSIBLE */
-.coll-hdr{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
-.coll-arr{color:var(--muted);font-size:17px;transition:transform .25s;flex-shrink:0;line-height:1}
-.coll-hdr.open .coll-arr{transform:rotate(180deg)}
-.coll-body{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1),margin-top .25s;margin-top:0}
-.coll-body.open{max-height:900px;margin-top:14px}
-@media(min-width:900px){.coll-arr{display:none}.coll-body{max-height:none!important;overflow:visible!important;margin-top:14px!important}}
+.search-wrap { position:relative; flex-shrink:0 }
+.search-wrap input {
+  width: 210px;
+  background: var(--grey-50);
+  border: 1.5px solid var(--grey-200);
+  border-radius: var(--r-sm);
+  padding: 8px 12px 8px 34px;
+  color: var(--grey-900);
+  font-size: 13px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+  -webkit-appearance:none;
+}
+@media(max-width:560px){ .search-wrap{width:100%} .search-wrap input{width:100%} }
+.search-wrap input::placeholder { color:var(--grey-400) }
+.search-wrap input:focus { border-color:var(--red); box-shadow:0 0 0 3px rgba(200,16,46,.08); background:var(--white) }
+.search-wrap svg { position:absolute; left:9px; top:50%; transform:translateY(-50%); color:var(--grey-400); pointer-events:none }
 
-/* FORM */
-.form-group{margin-bottom:11px}
-.form-group label{display:block;font-size:11px;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
-.req{color:var(--gold);font-size:13px;vertical-align:middle}
-.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--navy);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 12px;color:var(--white);font-size:13.5px;font-weight:300;outline:none;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,150,26,.1)}
-.form-group select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238A9AB5' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
-.form-group select option{background:var(--navy-mid)}
-.form-group textarea{resize:vertical;min-height:76px}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media(max-width:360px){.form-grid{grid-template-columns:1fr}}
-.checkbox-group{display:flex;flex-direction:column;gap:7px}
-.checkbox-item{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:12.5px;color:var(--muted);transition:color .15s}
-.checkbox-item:hover{color:var(--white)}
-.checkbox-item input[type=checkbox]{width:15px;height:15px;accent-color:var(--gold);cursor:pointer;padding:0;background:transparent;border:none;flex-shrink:0}
-.submit-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--gold),var(--gold-b));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--navy);letter-spacing:.2px;transition:all .2s;margin-top:6px}
-.submit-btn:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,150,26,.35)}
-.submit-btn:active{transform:translateY(0)}
+/* ═══════════════════════════════════════════════
+   PROBLEM CARDS
+═══════════════════════════════════════════════ */
+.problems-list { display:flex; flex-direction:column; gap:10px }
 
-/* COURSE BARS */
-.course-bar{margin-bottom:11px}
-.course-bar-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;margin-bottom:5px}
-.course-bar-top span:first-child{font-weight:500;color:var(--white)}
-.course-bar-top span:last-child{color:var(--muted)}
-.bar-track{height:5px;background:rgba(255,255,255,.06);border-radius:100px;overflow:hidden}
-.bar-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--gold-b));transition:width 1s ease}
+.problem-card {
+  background: var(--white);
+  border: 1px solid var(--grey-100);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  cursor: pointer;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+  position: relative;
+  overflow: hidden;
+}
+.problem-card::before {
+  content:'';
+  position:absolute; left:0; top:0; bottom:0; width:3px;
+  background: transparent;
+  transition: background .2s;
+  border-radius: var(--r-lg) 0 0 var(--r-lg);
+}
+.problem-card:hover {
+  border-color: var(--grey-200);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+.problem-card:hover::before { background:var(--red) }
+.problem-card:active { transform:translateY(0) }
 
-/* STEPS */
-.steps{display:flex;flex-direction:column;gap:13px}
-.step{display:flex;gap:11px;align-items:flex-start}
-.step-num{width:24px;height:24px;border-radius:50%;flex-shrink:0;background:var(--tag-bg);border:1px solid rgba(201,150,26,.3);display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:var(--gold)}
-.step p.step-title{font-size:12.5px;font-weight:500;margin-bottom:1px}
-.step p.step-desc{font-size:11.5px;color:var(--muted);font-weight:300}
+.card-top {
+  display:flex; align-items:flex-start; justify-content:space-between;
+  gap:10px; margin-bottom:8px;
+}
+.card-company {
+  font-size:15px; font-weight:700; color:var(--grey-900);
+  line-height:1.2; letter-spacing:-.2px;
+}
+.card-sector {
+  font-size:11.5px; color:var(--grey-400); font-weight:400; margin-top:1px
+}
 
-/* FAB */
-.fab{display:none;position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));right:var(--pad);z-index:40;padding:13px 18px;background:linear-gradient(135deg,var(--gold),var(--gold-b));border:none;border-radius:50px;font-family:'Syne',sans-serif;font-weight:700;font-size:13.5px;color:var(--navy);letter-spacing:.2px;box-shadow:0 8px 28px rgba(201,150,26,.45);transition:transform .2s,box-shadow .2s;align-items:center;gap:7px}
-.fab:active{transform:scale(.96)}
-@media(max-width:700px){.fab{display:flex}}
+.status-badge {
+  padding:3px 10px; border-radius:100px;
+  font-size:10.5px; font-weight:600; text-transform:uppercase; letter-spacing:.4px;
+  white-space:nowrap; flex-shrink:0;
+}
+.status-badge.aberto { background:var(--amber-bg); color:var(--amber); border:1.5px solid rgba(217,119,6,.2) }
+.status-badge.em-andamento { background:var(--blue-bg); color:var(--blue); border:1.5px solid rgba(29,111,164,.2) }
+.status-badge.concluido { background:var(--green-bg); color:var(--green); border:1.5px solid rgba(14,159,110,.2) }
 
-/* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(5,12,24,.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:100;display:flex;align-items:flex-end;justify-content:center;padding:0;opacity:0;pointer-events:none;transition:opacity .25s}
-@media(min-width:600px){.modal-overlay{align-items:center;padding:20px}}
-.modal-overlay.open{opacity:1;pointer-events:all}
-.modal{background:var(--navy-mid);border:1px solid var(--border);width:100%;max-height:92dvh;overflow-y:auto;position:relative;border-radius:var(--r-lg) var(--r-lg) 0 0;padding:20px 18px calc(20px + env(safe-area-inset-bottom));transform:translateY(40px);transition:transform .28s cubic-bezier(.4,0,.2,1)}
-@media(min-width:600px){.modal{max-width:640px;border-radius:var(--r-lg);padding:26px;transform:translateY(20px)}}
-.modal-overlay.open .modal{transform:translateY(0)}
-.modal-handle{display:flex;justify-content:center;margin-bottom:14px}
-.modal-handle span{width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,.15)}
+.card-problem-title {
+  font-size:13.5px; font-weight:600; color:var(--grey-900);
+  margin-bottom:6px; line-height:1.4;
+}
+.card-desc {
+  font-size:12.5px; color:var(--grey-600); font-weight:400; line-height:1.6;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  margin-bottom:12px;
+}
+
+.card-tags { display:flex; flex-wrap:wrap; gap:5px }
+.tag {
+  padding:3px 9px; border-radius:var(--r-xs);
+  font-size:11px; font-weight:500;
+  background:var(--grey-50); color:var(--grey-600);
+  border:1px solid var(--grey-100);
+}
+.tag.area { background:var(--red-mid); color:var(--red); border-color:rgba(200,16,46,.15); font-weight:600 }
+.tag.urg-alta { background:#FEE2E2; color:#B91C1C; border-color:#FCA5A5 }
+.tag.urg-media { background:var(--amber-bg); color:var(--amber); border-color:#FCD34D }
+.tag.urg-baixa { background:var(--green-bg); color:var(--green); border-color:#6EE7B7 }
+
+.card-footer {
+  margin-top:12px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+  border-top:1px solid var(--grey-50); padding-top:10px;
+}
+.card-meta { display:flex; gap:14px; flex-wrap:wrap }
+.meta-item { display:flex; align-items:center; gap:4px; font-size:11.5px; color:var(--grey-400) }
+.card-cta {
+  font-size:12px; color:var(--red); font-weight:600;
+  display:flex; align-items:center; gap:4px;
+  transition:gap .15s; white-space:nowrap; flex-shrink:0;
+}
+.problem-card:hover .card-cta { gap:8px }
+.no-results { display:none; text-align:center; padding:48px 24px; color:var(--grey-400); font-size:14px }
+
+/* ═══════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════ */
+.sidebar { display:flex; flex-direction:column; gap:16px }
+@media(min-width:960px){ .sidebar{ position:sticky; top:calc(var(--header-h) + 16px) } }
+
+.sidebar-card {
+  background: var(--white);
+  border: 1px solid var(--grey-100);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.sidebar-card-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--grey-50);
+  display: flex; align-items:center; justify-content:space-between;
+  cursor:pointer; user-select:none;
+  background:var(--white);
+}
+.sidebar-card-head h3 {
+  font-size:13.5px; font-weight:700; color:var(--grey-900);
+  display:flex; align-items:center; gap:8px;
+}
+.sidebar-card-head h3 .hd-icon {
+  width:24px; height:24px; border-radius:6px;
+  background:var(--red); display:flex; align-items:center; justify-content:center;
+  font-size:12px; flex-shrink:0; color:white;
+}
+.coll-arr { color:var(--grey-400); font-size:16px; transition:transform .25s; line-height:1 }
+.sidebar-card-head.open .coll-arr { transform:rotate(180deg) }
+.sidebar-card-body {
+  padding:16px 18px;
+  overflow:hidden; max-height:0;
+  transition:max-height .35s cubic-bezier(.4,0,.2,1);
+}
+.sidebar-card-body.open { max-height:900px }
+@media(min-width:960px){
+  .coll-arr{display:none}
+  .sidebar-card-body{max-height:none!important;overflow:visible!important}
+}
+
+/* ═══════════════════════════════════════════════
+   FORM
+═══════════════════════════════════════════════ */
+.form-group { margin-bottom:12px }
+.form-group label {
+  display:block; font-size:11.5px; font-weight:600;
+  color:var(--grey-700,#374151); text-transform:uppercase;
+  letter-spacing:.4px; margin-bottom:5px;
+}
+.req { color:var(--red); font-size:13px; vertical-align:middle }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width:100%; background:var(--white);
+  border:1.5px solid var(--grey-200);
+  border-radius:var(--r-sm);
+  padding:9px 12px; color:var(--grey-900);
+  font-size:13px; font-weight:400;
+  outline:none; transition:border-color .2s, box-shadow .2s;
+  -webkit-appearance:none; appearance:none;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color:var(--red);
+  box-shadow:0 0 0 3px rgba(200,16,46,.08);
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder { color:var(--grey-400) }
+.form-group select {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239AA5B4' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 12px center; padding-right:34px;
+  cursor:pointer;
+}
+.form-group textarea { resize:vertical; min-height:76px }
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px }
+@media(max-width:360px){ .form-grid{grid-template-columns:1fr} }
+
+.checkbox-group { display:flex; flex-direction:column; gap:7px }
+.checkbox-item {
+  display:flex; align-items:center; gap:8px;
+  cursor:pointer; font-size:12.5px; color:var(--grey-600); transition:color .15s;
+}
+.checkbox-item:hover { color:var(--grey-900) }
+.checkbox-item input[type=checkbox] {
+  width:15px; height:15px; accent-color:var(--red);
+  cursor:pointer; flex-shrink:0;
+}
+
+.submit-btn {
+  width:100%; padding:11px;
+  background:var(--red); border:none;
+  border-radius:var(--r-sm);
+  font-family:inherit; font-weight:700; font-size:13.5px;
+  color:var(--white); letter-spacing:.2px;
+  transition:all .2s; margin-top:6px;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.submit-btn:hover { background:var(--red-dark); box-shadow:0 4px 14px rgba(200,16,46,.3); transform:translateY(-1px) }
+.submit-btn:active { transform:translateY(0) }
+
+/* ═══════════════════════════════════════════════
+   COURSE BARS
+═══════════════════════════════════════════════ */
+.course-bar { margin-bottom:11px }
+.course-bar-top { display:flex; justify-content:space-between; align-items:center; font-size:12px; margin-bottom:5px }
+.course-bar-top span:first-child { font-weight:600; color:var(--grey-800) }
+.course-bar-top span:last-child { color:var(--grey-400); font-size:11px }
+.bar-track { height:5px; background:var(--grey-100); border-radius:100px; overflow:hidden }
+.bar-fill { height:100%; border-radius:100px; background:var(--red); transition:width 1s ease }
+
+/* ═══════════════════════════════════════════════
+   STEPS
+═══════════════════════════════════════════════ */
+.steps { display:flex; flex-direction:column; gap:13px }
+.step { display:flex; gap:12px; align-items:flex-start }
+.step-num {
+  width:24px; height:24px; border-radius:50%; flex-shrink:0;
+  background:var(--red); color:var(--white);
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700;
+}
+.step-content p.step-title { font-size:12.5px; font-weight:600; color:var(--grey-900); margin-bottom:1px }
+.step-content p.step-desc { font-size:11.5px; color:var(--grey-400); font-weight:400 }
+
+/* ═══════════════════════════════════════════════
+   FAB MOBILE
+═══════════════════════════════════════════════ */
+.fab {
+  display:none;
+  position:fixed; bottom:calc(20px + env(safe-area-inset-bottom)); right:var(--pad);
+  z-index:40;
+  padding:14px 20px;
+  background:var(--red); border:none;
+  border-radius:50px;
+  font-family:inherit; font-weight:700; font-size:13.5px;
+  color:var(--white); letter-spacing:.2px;
+  box-shadow:0 8px 24px rgba(200,16,46,.45);
+  transition:transform .2s;
+  align-items:center; gap:7px;
+}
+.fab:active { transform:scale(.96) }
+@media(max-width:700px){ .fab{display:flex} }
+
+/* ═══════════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════════ */
+.modal-overlay {
+  position:fixed; inset:0;
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px);
+  z-index:100;
+  display:flex; align-items:flex-end; justify-content:center; padding:0;
+  opacity:0; pointer-events:none; transition:opacity .25s;
+}
+@media(min-width:600px){ .modal-overlay{align-items:center;padding:20px} }
+.modal-overlay.open { opacity:1; pointer-events:all }
+
+.modal {
+  background:var(--white); width:100%;
+  max-height:92dvh; overflow-y:auto;
+  position:relative;
+  border-radius:var(--r-xl) var(--r-xl) 0 0;
+  padding:20px 20px calc(20px + env(safe-area-inset-bottom));
+  transform:translateY(40px);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  border-top:3px solid var(--red);
+}
+@media(min-width:600px){
+  .modal{ max-width:640px; border-radius:var(--r-xl); padding:28px; transform:translateY(20px); border-top:3px solid var(--red) }
+}
+.modal-overlay.open .modal { transform:translateY(0) }
+
+.modal-handle { display:flex; justify-content:center; margin-bottom:14px }
+.modal-handle span { width:36px; height:4px; border-radius:2px; background:var(--grey-200) }
 @media(min-width:600px){.modal-handle{display:none}}
-.modal-close{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:var(--r-sm);width:32px;height:32px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px;transition:all .15s}
-.modal-close:hover{color:var(--white);background:rgba(255,255,255,.1)}
-.modal-badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
-.modal-company{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(18px,4vw,22px);letter-spacing:-.4px;margin-bottom:5px}
-.modal-problem{font-size:15px;font-weight:500;color:var(--gold-pale);margin-bottom:14px;line-height:1.4}
-.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+
+.modal-close {
+  position:absolute; top:14px; right:14px;
+  background:var(--grey-50); border:1px solid var(--grey-200);
+  border-radius:var(--r-sm); width:32px; height:32px;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--grey-600); font-size:16px; transition:all .15s;
+}
+.modal-close:hover { color:var(--grey-900); background:var(--grey-100) }
+
+.modal-badge-row { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px }
+.modal-company { font-size:clamp(18px,4vw,22px); font-weight:800; color:var(--grey-900); letter-spacing:-.4px; margin-bottom:5px }
+.modal-problem { font-size:15px; font-weight:600; color:var(--red); margin-bottom:16px; line-height:1.4 }
+.modal-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px }
 @media(max-width:380px){.modal-grid{grid-template-columns:1fr}}
-.modal-field{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
-.modal-field .label{font-size:10.5px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:3px}
-.modal-field .value{font-size:13.5px;font-weight:500}
-.modal-section{margin-bottom:14px}
-.modal-section h4{font-size:10.5px;text-transform:uppercase;letter-spacing:.7px;color:var(--muted);font-weight:600;margin-bottom:6px}
-.modal-section p{font-size:13.5px;color:rgba(250,250,248,.8);font-weight:300;line-height:1.65}
-.modal-propose-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--gold),var(--gold-b));border:none;border-radius:10px;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;color:var(--navy);transition:all .2s;margin-top:6px}
-.modal-propose-btn:hover{filter:brightness(1.1);box-shadow:0 6px 20px rgba(201,150,26,.3)}
+.modal-field {
+  background:var(--grey-50); border:1px solid var(--grey-100);
+  border-radius:var(--r-md); padding:10px 12px;
+}
+.modal-field .label { font-size:10.5px; text-transform:uppercase; letter-spacing:.5px; color:var(--grey-400); margin-bottom:3px; font-weight:600 }
+.modal-field .value { font-size:13.5px; font-weight:600; color:var(--grey-900) }
+.modal-section { margin-bottom:14px }
+.modal-section h4 { font-size:10.5px; text-transform:uppercase; letter-spacing:.7px; color:var(--grey-400); font-weight:700; margin-bottom:6px; display:flex; align-items:center; gap:6px }
+.modal-section h4::before { content:''; display:block; width:3px; height:12px; background:var(--red); border-radius:2px }
+.modal-section p { font-size:13.5px; color:var(--grey-600); font-weight:400; line-height:1.65 }
+.modal-propose-btn {
+  width:100%; padding:13px;
+  background:var(--red); border:none; border-radius:var(--r-sm);
+  font-family:inherit; font-weight:700; font-size:14px;
+  color:var(--white); transition:all .2s; margin-top:6px;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+}
+.modal-propose-btn:hover { background:var(--red-dark); box-shadow:0 4px 14px rgba(200,16,46,.3) }
 
-/* TOAST */
-.toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(100px);z-index:200;background:var(--navy-light);border:1px solid rgba(46,204,138,.4);border-radius:var(--r-md);padding:12px 16px;display:flex;align-items:center;gap:9px;font-size:13px;font-weight:500;color:var(--success);box-shadow:0 8px 32px rgba(0,0,0,.4);transition:transform .35s cubic-bezier(.22,.61,.36,1);width:calc(100% - 32px);max-width:380px}
-.toast.show{transform:translateX(-50%) translateY(0)}
-@media(min-width:600px){.toast{left:auto;right:20px;transform:translateX(0) translateY(100px);width:auto}.toast.show{transform:translateX(0) translateY(0)}}
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+.toast {
+  position:fixed;
+  bottom:calc(18px + env(safe-area-inset-bottom));
+  left:50%; transform:translateX(-50%) translateY(100px);
+  z-index:200;
+  background:var(--grey-900);
+  border-radius:var(--r-md);
+  padding:12px 18px;
+  display:flex; align-items:center; gap:10px;
+  font-size:13px; font-weight:500; color:var(--white);
+  box-shadow:0 8px 32px rgba(0,0,0,.25);
+  transition:transform .35s cubic-bezier(.22,.61,.36,1);
+  width:calc(100% - 32px); max-width:380px;
+}
+.toast.show { transform:translateX(-50%) translateY(0) }
+@media(min-width:600px){ .toast{left:auto;right:20px;transform:translateX(0) translateY(100px);width:auto} .toast.show{transform:translateX(0) translateY(0)} }
+.toast-icon { font-size:18px; flex-shrink:0 }
 
-/* ANIM */
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.problem-card{animation:fadeUp .35s ease both}
+/* ═══════════════════════════════════════════════
+   FOOTER BAND
+═══════════════════════════════════════════════ */
+.footer-band {
+  background:var(--grey-900);
+  color:var(--grey-400);
+  text-align:center;
+  padding:18px var(--pad);
+  font-size:12px;
+}
+.footer-band strong { color:var(--white) }
+
+/* ═══════════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.problem-card{animation:fadeUp .3s ease both}
 .problem-card:nth-child(1){animation-delay:.04s}
-.problem-card:nth-child(2){animation-delay:.09s}
-.problem-card:nth-child(3){animation-delay:.14s}
-.problem-card:nth-child(4){animation-delay:.19s}
+.problem-card:nth-child(2){animation-delay:.08s}
+.problem-card:nth-child(3){animation-delay:.12s}
+.problem-card:nth-child(4){animation-delay:.16s}
 
-/* SCROLLBAR */
+/* ═══════════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════════ */
 ::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:var(--navy)}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
-::-webkit-scrollbar-thumb:hover{background:var(--navy-light)}
+::-webkit-scrollbar-track{background:var(--grey-50)}
+::-webkit-scrollbar-thumb{background:var(--grey-200);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--grey-400)}
 </style>
 </head>
 <body>
 
+<!-- TOP BAR -->
+<div class="top-bar">
+  <a href="https://www.unipar.br" target="_blank">unipar.br</a>
+  <span class="top-bar-sep">|</span>
+  <a href="https://lyaluno.unipar.br/aluno/#/login" target="_blank">Aluno Online</a>
+  <span class="top-bar-sep">|</span>
+  <a href="https://digital.unipar.br" target="_blank">AVA</a>
+  <span class="top-bar-sep">|</span>
+  <a href="#">Cianorte</a>
+</div>
+
 <!-- HEADER -->
 <header>
-  <div class="logo-block">
-    <div class="logo-badge">CIAPE</div>
-    <div class="logo-text">
-      <strong>Banco de Problemas e Soluções</strong>
-      <span>UNIPAR Cianorte · Centro Integrado de Apoio a Projetos Empresariais</span>
+  <a class="logo-area" href="#">
+    <!-- Logo UNIPAR SVG oficial (recriado fielmente) -->
+    <div class="logo-unipar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 60" fill="none" role="img" aria-label="UNIPAR">
+        <!-- "UP" shield mark -->
+        <rect x="0" y="4" width="46" height="52" rx="4" fill="#C8102E"/>
+        <text x="23" y="37" text-anchor="middle" font-family="Arial Black,Arial,sans-serif" font-weight="900" font-size="22" fill="#fff" letter-spacing="-1">UP</text>
+        <!-- UNIPAR wordmark -->
+        <text x="56" y="28" font-family="Arial,sans-serif" font-weight="800" font-size="19" fill="#C8102E" letter-spacing="1">UNIPAR</text>
+        <text x="57" y="44" font-family="Arial,sans-serif" font-weight="400" font-size="9.5" fill="#52606D" letter-spacing="2.5">UNIVERSIDADE PARANAENSE</text>
+      </svg>
     </div>
-  </div>
+    <div class="logo-divider"></div>
+    <div class="logo-ciape">
+      <strong>CIAPE</strong>
+      <span>Centro Integrado de Apoio a Projetos Empresariais</span>
+    </div>
+  </a>
+
   <nav class="header-nav">
-    <button class="nav-btn ghost" onclick="scrollTo('lista')">Ver Problemas</button>
-    <button class="nav-btn ghost" onclick="scrollTo('como-funciona')">Como Funciona</button>
-    <button class="nav-btn primary" onclick="openFormModal()">+ Cadastrar Problema</button>
+    <button class="nav-btn ghost" onclick="scrollToEl('lista')">Ver Problemas</button>
+    <button class="nav-btn ghost" onclick="scrollToEl('como-funciona')">Como Funciona</button>
+    <button class="nav-btn primary" onclick="openFormModal()">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Cadastrar Problema
+    </button>
     <button class="hamburger" id="hamburger" onclick="toggleDrawer()" aria-label="Menu">
       <span></span><span></span><span></span>
     </button>
   </nav>
 </header>
 
+<!-- MOBILE DRAWER -->
 <div class="mobile-drawer" id="mobileDrawer">
-  <button class="nav-btn ghost" onclick="scrollTo('lista');closeDrawer()">📋 Ver Problemas</button>
-  <button class="nav-btn ghost" onclick="scrollTo('como-funciona');closeDrawer()">⚙️ Como Funciona</button>
-  <button class="nav-btn primary" onclick="openFormModal();closeDrawer()">+ Cadastrar Problema</button>
+  <button class="nav-btn ghost" onclick="scrollToEl('lista');closeDrawer()">📋 Ver Problemas</button>
+  <button class="nav-btn ghost" onclick="scrollToEl('como-funciona');closeDrawer()">⚙️ Como Funciona</button>
+  <button class="nav-btn primary" onclick="openFormModal();closeDrawer()">
+    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Cadastrar Problema
+  </button>
 </div>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-eyebrow">CIAPE — UNIPAR Cianorte</div>
-  <h1>Conectamos <em>desafios reais</em> ao conhecimento acadêmico</h1>
-  <p class="hero-sub">Empresas depositam seus problemas. Os cursos da UNIPAR propõem soluções por meio de projetos de aula, extensão e pesquisa. O CIAPE coordena tudo.</p>
-  <div class="hero-stats">
-    <div class="stat"><span class="stat-val" id="stat-total">0</span><span class="stat-label">Problemas</span></div>
-    <div class="stat"><span class="stat-val" id="stat-abertos">0</span><span class="stat-label">Aguardando</span></div>
-    <div class="stat"><span class="stat-val" id="stat-andamento">0</span><span class="stat-label">Em Andamento</span></div>
-    <div class="stat"><span class="stat-val" id="stat-concluidos">0</span><span class="stat-label">Concluídos</span></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">CIAPE · UNIPAR Cianorte</div>
+    <h1>Banco de Problemas<br><span>e Soluções Empresariais</span></h1>
+    <p class="hero-sub">Empresas depositam seus desafios reais. Os cursos da UNIPAR propõem soluções por meio de projetos de aula, extensão e pesquisa. O CIAPE coordena tudo.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-val" id="stat-total">0</span>
+        <span class="stat-label">Problemas</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val" id="stat-abertos">0</span>
+        <span class="stat-label">Aguardando</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val" id="stat-andamento">0</span>
+        <span class="stat-label">Em Andamento</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val" id="stat-concluidos">0</span>
+        <span class="stat-label">Concluídos</span>
+      </div>
+    </div>
   </div>
 </section>
 
+<!-- PAGE BAND -->
+<div class="page-band">
+  <a href="#" style="color:var(--grey-400);text-decoration:none">UNIPAR</a>
+  <span class="sep">›</span>
+  <a href="#" style="color:var(--grey-400);text-decoration:none">CIAPE</a>
+  <span class="sep">›</span>
+  <span>Banco de Problemas e Soluções</span>
+</div>
+
 <!-- MAIN -->
 <div class="main-wrap">
+
+  <!-- LISTA -->
   <div class="col-list" id="lista">
-    <div class="section-title">Problemas Cadastrados</div>
+    <div class="section-header">
+      <div class="section-title">Problemas Cadastrados</div>
+      <span class="section-count" id="count-badge">Carregando…</span>
+    </div>
+
+    <!-- FILTERS -->
     <div class="filters-bar">
-      <span class="filter-label">Filtrar:</span>
-      <button class="filter-chip active" onclick="filterCards('todos',this)">Todos</button>
-      <button class="filter-chip" onclick="filterCards('aberto',this)">Abertos</button>
-      <button class="filter-chip" onclick="filterCards('em-andamento',this)">Em Andamento</button>
-      <button class="filter-chip" onclick="filterCards('concluido',this)">Concluídos</button>
+      <span class="filter-label">Status:</span>
+      <div class="filter-chips">
+        <button class="filter-chip active" onclick="filterCards('todos',this)">Todos</button>
+        <button class="filter-chip" onclick="filterCards('aberto',this)">Abertos</button>
+        <button class="filter-chip" onclick="filterCards('em-andamento',this)">Em Andamento</button>
+        <button class="filter-chip" onclick="filterCards('concluido',this)">Concluídos</button>
+      </div>
       <div class="search-wrap">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" placeholder="Buscar empresa ou problema…" oninput="searchCards(this.value)">
+        <input type="text" placeholder="Buscar empresa, área…" oninput="searchCards(this.value)">
       </div>
     </div>
+
     <div class="problems-list" id="problemsList"></div>
-    <div class="no-results" id="noResults">Nenhum resultado encontrado.</div>
+    <div class="no-results" id="noResults">
+      <svg width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="margin:0 auto 12px;color:var(--grey-200)"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <p>Nenhum resultado encontrado para este filtro.</p>
+    </div>
   </div>
 
+  <!-- SIDEBAR -->
   <aside class="sidebar">
-    <!-- FORM -->
+
+    <!-- FORM RÁPIDO -->
     <div class="sidebar-card">
-      <div class="coll-hdr" onclick="toggleColl(this)">
-        <h3>📌 Cadastrar Problema</h3>
+      <div class="sidebar-card-head open" onclick="toggleColl(this)">
+        <h3><span class="hd-icon">+</span> Cadastrar Problema</h3>
         <span class="coll-arr">⌄</span>
       </div>
-      <div class="coll-body">
-        <div class="form-group"><label>Nome da Empresa <span class="req">*</span></label><input type="text" id="sb-empresa" placeholder="Ex.: Indústria Alfa Ltda."></div>
+      <div class="sidebar-card-body open">
+        <div class="form-group"><label>Nome da Empresa <span class="req">*</span></label><input type="text" id="sb-empresa" placeholder="Ex.: Metalúrgica Alfa Ltda."></div>
         <div class="form-group"><label>Título do Problema <span class="req">*</span></label><input type="text" id="sb-titulo" placeholder="Em uma frase objetiva"></div>
         <div class="form-group"><label>Área Afetada <span class="req">*</span></label>
           <select id="sb-area"><option value="">Selecione…</option><option>Gestão / Administração</option><option>Recursos Humanos</option><option>Financeiro / Contábil</option><option>Jurídico / Compliance</option><option>Marketing / Vendas</option><option>Produção / Operações</option><option>Logística / Supply Chain</option><option>TI / Tecnologia</option><option>Saúde / Segurança</option><option>Engenharia / Infraestrutura</option><option>Sustentabilidade / Ambiental</option><option>Outro</option></select>
         </div>
-        <div class="form-group"><label>Descrição <span class="req">*</span></label><textarea id="sb-descricao" placeholder="Contexto, impacto e o que já foi tentado…" rows="4"></textarea></div>
-        <div class="form-group"><label>Tipo de Solução Esperada</label>
+        <div class="form-group"><label>Descrição <span class="req">*</span></label><textarea id="sb-descricao" rows="4" placeholder="Contexto, impacto e o que já foi tentado…"></textarea></div>
+        <div class="form-group"><label>Tipo de Solução</label>
           <div class="checkbox-group">
             <label class="checkbox-item"><input type="checkbox" id="cb-aula"> Projeto de Aula</label>
             <label class="checkbox-item"><input type="checkbox" id="cb-extensao"> Extensão Universitária</label>
@@ -299,17 +981,20 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold-
           <div class="form-group"><label>Urgência</label><select id="sb-urgencia"><option value="">Selecione</option><option>Alta</option><option>Média</option><option>Baixa</option></select></div>
         </div>
         <div class="form-group"><label>E-mail / Telefone</label><input type="text" id="sb-email" placeholder="contato@empresa.com.br"></div>
-        <button class="submit-btn" onclick="submitProblem()">Submeter ao CIAPE →</button>
+        <button class="submit-btn" onclick="submitProblem()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+          Submeter ao CIAPE
+        </button>
       </div>
     </div>
 
     <!-- CURSOS -->
     <div class="sidebar-card">
-      <div class="coll-hdr" onclick="toggleColl(this)">
-        <h3>🎓 Participação por Curso</h3>
+      <div class="sidebar-card-head" onclick="toggleColl(this)">
+        <h3><span class="hd-icon">🎓</span> Participação por Curso</h3>
         <span class="coll-arr">⌄</span>
       </div>
-      <div class="coll-body">
+      <div class="sidebar-card-body">
         <div class="course-bar"><div class="course-bar-top"><span>Administração</span><span>5 projetos</span></div><div class="bar-track"><div class="bar-fill" style="width:82%"></div></div></div>
         <div class="course-bar"><div class="course-bar-top"><span>Eng. de Produção</span><span>4 projetos</span></div><div class="bar-track"><div class="bar-fill" style="width:70%"></div></div></div>
         <div class="course-bar"><div class="course-bar-top"><span>Direito</span><span>3 projetos</span></div><div class="bar-track"><div class="bar-fill" style="width:55%"></div></div></div>
@@ -321,19 +1006,20 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold-
 
     <!-- COMO FUNCIONA -->
     <div class="sidebar-card" id="como-funciona">
-      <div class="coll-hdr" onclick="toggleColl(this)">
-        <h3>⚙️ Como Funciona</h3>
+      <div class="sidebar-card-head" onclick="toggleColl(this)">
+        <h3><span class="hd-icon">⚙</span> Como Funciona</h3>
         <span class="coll-arr">⌄</span>
       </div>
-      <div class="coll-body">
+      <div class="sidebar-card-body">
         <div class="steps">
-          <div class="step"><div class="step-num">1</div><div><p class="step-title">Empresa cadastra o problema</p><p class="step-desc">Descreve o desafio, área afetada e solução esperada.</p></div></div>
-          <div class="step"><div class="step-num">2</div><div><p class="step-title">CIAPE analisa e encaminha</p><p class="step-desc">Avalia viabilidade e direciona ao curso adequado.</p></div></div>
-          <div class="step"><div class="step-num">3</div><div><p class="step-title">Curso propõe solução</p><p class="step-desc">Via projeto de aula, extensão, pesquisa ou consultoria.</p></div></div>
-          <div class="step"><div class="step-num">4</div><div><p class="step-title">Entrega e documentação</p><p class="step-desc">Resultado entregue à empresa e registrado academicamente.</p></div></div>
+          <div class="step"><div class="step-num">1</div><div class="step-content"><p class="step-title">Empresa cadastra o problema</p><p class="step-desc">Descreve o desafio, área afetada e tipo de solução.</p></div></div>
+          <div class="step"><div class="step-num">2</div><div class="step-content"><p class="step-title">CIAPE analisa e encaminha</p><p class="step-desc">Avalia viabilidade e direciona ao curso adequado.</p></div></div>
+          <div class="step"><div class="step-num">3</div><div class="step-content"><p class="step-title">Curso propõe solução</p><p class="step-desc">Via projeto de aula, extensão, pesquisa ou consultoria.</p></div></div>
+          <div class="step"><div class="step-num">4</div><div class="step-content"><p class="step-title">Entrega e documentação</p><p class="step-desc">Resultado entregue e registrado como produção acadêmica.</p></div></div>
         </div>
       </div>
     </div>
+
   </aside>
 </div>
 
@@ -342,6 +1028,11 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold-
   <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
   Cadastrar Problema
 </button>
+
+<!-- FOOTER -->
+<footer class="footer-band">
+  <strong>UNIPAR</strong> — Universidade Paranaense · Unidade Cianorte · CIAPE — Centro Integrado de Apoio a Projetos Empresariais
+</footer>
 
 <!-- MODAL DETALHE -->
 <div class="modal-overlay" id="detailModal" onclick="closeIfOverlay(event,'detailModal')">
@@ -352,13 +1043,22 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold-
   </div>
 </div>
 
-<!-- MODAL FORM -->
+<!-- MODAL FORM COMPLETO -->
 <div class="modal-overlay" id="formModal" onclick="closeIfOverlay(event,'formModal')">
   <div class="modal">
     <div class="modal-handle"><span></span></div>
     <button class="modal-close" onclick="closeModal('formModal')">✕</button>
-    <h2 style="font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(18px,4vw,22px);margin-bottom:4px;letter-spacing:-.4px;padding-right:36px">Cadastrar Problema</h2>
-    <p style="color:var(--muted);font-size:13px;font-weight:300;margin-bottom:18px">O CIAPE entrará em contato em até 48h.</p>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;padding-right:36px">
+      <div style="width:32px;height:32px;background:var(--red);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="16" height="16" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      <div>
+        <h2 style="font-size:clamp(16px,4vw,20px);font-weight:800;color:var(--grey-900);letter-spacing:-.3px">Cadastrar Problema</h2>
+        <p style="color:var(--grey-400);font-size:12px">O CIAPE retornará em até 48h.</p>
+      </div>
+    </div>
+    <div style="height:1px;background:var(--grey-100);margin:14px 0"></div>
+
     <div class="form-grid">
       <div class="form-group"><label>Empresa <span class="req">*</span></label><input type="text" id="fm-empresa" placeholder="Razão social"></div>
       <div class="form-group"><label>CNPJ / CPF</label><input type="text" id="fm-cnpj" placeholder="00.000.000/0001-00"></div>
@@ -391,35 +1091,37 @@ h1 em{font-style:normal;background:linear-gradient(90deg,var(--gold),var(--gold-
       </div>
     </div>
     <div class="form-grid">
-      <div class="form-group"><label>Urgência</label>
-        <select id="fm-urgencia"><option value="">Selecione</option><option>Alta — imediata</option><option>Média — 3 meses</option><option>Baixa — longo prazo</option></select>
-      </div>
-      <div class="form-group"><label>Disponibilidade</label>
-        <select id="fm-reuniao"><option value="">Selecione</option><option>Presencial na empresa</option><option>Presencial na UNIPAR</option><option>Videoconferência</option><option>Indiferente</option></select>
-      </div>
+      <div class="form-group"><label>Urgência</label><select id="fm-urgencia"><option value="">Selecione</option><option>Alta — imediata</option><option>Média — 3 meses</option><option>Baixa — longo prazo</option></select></div>
+      <div class="form-group"><label>Disponibilidade</label><select id="fm-reuniao"><option value="">Selecione</option><option>Presencial na empresa</option><option>Presencial na UNIPAR</option><option>Videoconferência</option><option>Indiferente</option></select></div>
     </div>
-    <div class="form-group"><label>Observações</label><textarea id="fm-obs" rows="3" placeholder="Documentos, confidencialidade, parcerias com a UNIPAR…"></textarea></div>
-    <button class="submit-btn" onclick="submitProblemFull()">Enviar ao CIAPE →</button>
+    <div class="form-group"><label>Observações</label><textarea id="fm-obs" rows="3" placeholder="Documentos, sigilo, parcerias com a UNIPAR…"></textarea></div>
+    <button class="submit-btn" onclick="submitProblemFull()">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+      Enviar ao CIAPE
+    </button>
   </div>
 </div>
 
 <!-- TOAST -->
 <div class="toast" id="toast">
-  <span style="font-size:17px;flex-shrink:0">✅</span>
+  <span class="toast-icon">✅</span>
   <span id="toastMsg">Problema cadastrado!</span>
 </div>
 
 <script>
+/* ─── DATA ─── */
 const problems=[
   {id:1,empresa:"Metalúrgica Santa Fé",setor:"Indústria",titulo:"Alto índice de rotatividade na linha de produção",area:"Recursos Humanos",descricao:"Nos últimos 12 meses, o turnover na linha de produção ultrapassou 38%, gerando custos elevados de treinamento e perda de produtividade. Pesquisas de clima foram realizadas sem ação estruturada de retenção.",impacto:"Custo estimado de R$ 45.000/mês em reposição e treinamento",urgencia:"Alta",tiposSolucao:["Projeto de Aula","Extensão"],contato:"Márcia Oliveira — RH",status:"aberto",data:"14/04/2025",cursoSugerido:"Psicologia, Administração"},
   {id:2,empresa:"Agropecuária Horizonte",setor:"Agronegócio",titulo:"Ausência de controle financeiro para pequenas safras",area:"Financeiro / Contábil",descricao:"A empresa não possui software de controle de custos por talhão. Planilhas inconsistentes não permitem projeção de resultado por cultura. Busca-se modelo simplificado de gestão financeira rural.",impacto:"Impossibilidade de decisões de investimento com embasamento",urgencia:"Média",tiposSolucao:["Projeto de Aula","Consultoria"],contato:"Roberto Antunes — Sócio",status:"em-andamento",data:"02/04/2025",cursoSugerido:"Ciências Contábeis, Sistemas de Informação"},
   {id:3,empresa:"Clínica Saúde+ Cianorte",setor:"Saúde",titulo:"Absenteísmo elevado na equipe administrativa",area:"Saúde / Segurança",descricao:"O absenteísmo cresceu 22% em 6 meses, com destaque para afastamentos por ansiedade e burnout. A clínica não possui programa de saúde mental para seus próprios colaboradores.",impacto:"Queda na qualidade do atendimento e sobrecarga dos demais",urgencia:"Alta",tiposSolucao:["Extensão","Pesquisa Aplicada"],contato:"Dr. Fábio Moraes — Diretor",status:"aberto",data:"18/04/2025",cursoSugerido:"Psicologia, Enfermagem"},
   {id:4,empresa:"Distribuidora JC Atacado",setor:"Comércio",titulo:"Falta de identidade de marca e presença digital",area:"Marketing / Vendas",descricao:"Empresa com 18 anos de mercado não possui logotipo atualizado, site ou presença em redes sociais. Com novos concorrentes regionais, a invisibilidade digital impacta o faturamento.",impacto:"Perda estimada de 12% de clientes B2C nos últimos 2 anos",urgencia:"Média",tiposSolucao:["Projeto de Aula"],contato:"Jonas Carvalho — Proprietário",status:"concluido",data:"10/03/2025",cursoSugerido:"Publicidade e Propaganda, Administração"}
 ];
-const statusLabel={aberto:'Aberto','em-andamento':'Em Andamento',concluido:'Concluído'};
-const urgColor={Alta:'#E05252',Média:'#E8B830',Baixa:'#2ECC8A'};
-let currentFilter='todos',currentSearch='';
 
+const statusLabel={aberto:'Aberto','em-andamento':'Em Andamento',concluido:'Concluído'};
+const urgTagClass={Alta:'urg-alta',Média:'urg-media',Baixa:'urg-baixa'};
+let currentFilter='todos', currentSearch='';
+
+/* ─── RENDER ─── */
 function renderCards(){
   const list=document.getElementById('problemsList');
   const noRes=document.getElementById('noResults');
@@ -431,14 +1133,38 @@ function renderCards(){
   });
   list.innerHTML='';
   noRes.style.display=filtered.length?'none':'block';
+  document.getElementById('count-badge').textContent=filtered.length+' resultado'+(filtered.length!==1?'s':'');
   filtered.forEach((p,i)=>{
     const c=document.createElement('div');
-    c.className='problem-card';c.style.animationDelay=(i*.06)+'s';c.onclick=()=>openDetail(p.id);
-    c.innerHTML=`<div class="card-top"><span class="card-company">${p.empresa}</span><span class="status-badge ${p.status}">${statusLabel[p.status]}</span></div>
-    <div class="card-problem-title">${p.titulo}</div>
-    <div class="card-desc">${p.descricao}</div>
-    <div class="card-tags"><span class="tag area">${p.area}</span><span class="tag">${p.setor}</span>${p.tiposSolucao.map(t=>`<span class="tag">${t}</span>`).join('')}<span class="tag" style="color:${urgColor[p.urgencia]};border-color:${urgColor[p.urgencia]}33">● ${p.urgencia}</span></div>
-    <div class="card-meta"><div class="card-meta-left"><span class="meta-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${p.data}</span><span class="meta-item"><svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${p.contato.split('—')[0].trim()}</span></div><span class="card-cta">Ver Detalhes →</span></div>`;
+    c.className='problem-card';c.style.animationDelay=(i*.05)+'s';c.onclick=()=>openDetail(p.id);
+    c.innerHTML=`
+      <div class="card-top">
+        <div><div class="card-company">${p.empresa}</div><div class="card-sector">${p.setor}</div></div>
+        <span class="status-badge ${p.status}">${statusLabel[p.status]}</span>
+      </div>
+      <div class="card-problem-title">${p.titulo}</div>
+      <div class="card-desc">${p.descricao}</div>
+      <div class="card-tags">
+        <span class="tag area">${p.area}</span>
+        ${p.tiposSolucao.map(t=>`<span class="tag">${t}</span>`).join('')}
+        <span class="tag ${urgTagClass[p.urgencia]}">● ${p.urgencia}</span>
+      </div>
+      <div class="card-footer">
+        <div class="card-meta">
+          <span class="meta-item">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            ${p.data}
+          </span>
+          <span class="meta-item">
+            <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            ${p.contato.split('—')[0].trim()}
+          </span>
+        </div>
+        <span class="card-cta">
+          Ver detalhes
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </span>
+      </div>`;
     list.appendChild(c);
   });
   document.getElementById('stat-total').textContent=problems.length;
@@ -449,56 +1175,90 @@ function renderCards(){
 function filterCards(s,btn){currentFilter=s;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCards()}
 function searchCards(v){currentSearch=v;renderCards()}
 
+/* ─── DETAIL ─── */
 function openDetail(id){
   const p=problems.find(x=>x.id===id);if(!p)return;
   document.getElementById('detailBody').innerHTML=`
-    <div class="modal-badge-row"><span class="status-badge ${p.status}">${statusLabel[p.status]}</span><span class="tag area">${p.area}</span><span class="tag">${p.setor}</span><span class="tag" style="color:${urgColor[p.urgencia]};border-color:${urgColor[p.urgencia]}33">● Urgência ${p.urgencia}</span></div>
+    <div class="modal-badge-row">
+      <span class="status-badge ${p.status}">${statusLabel[p.status]}</span>
+      <span class="tag area">${p.area}</span>
+      <span class="tag">${p.setor}</span>
+      <span class="tag ${urgTagClass[p.urgencia]}">● ${p.urgencia}</span>
+    </div>
     <div class="modal-company">${p.empresa}</div>
     <div class="modal-problem">${p.titulo}</div>
-    <div class="modal-grid"><div class="modal-field"><div class="label">Área</div><div class="value">${p.area}</div></div><div class="modal-field"><div class="label">Setor</div><div class="value">${p.setor}</div></div><div class="modal-field"><div class="label">Cadastrado em</div><div class="value">${p.data}</div></div><div class="modal-field"><div class="label">Responsável</div><div class="value">${p.contato.split('—')[0].trim()}</div></div></div>
+    <div class="modal-grid">
+      <div class="modal-field"><div class="label">Área Afetada</div><div class="value">${p.area}</div></div>
+      <div class="modal-field"><div class="label">Setor</div><div class="value">${p.setor}</div></div>
+      <div class="modal-field"><div class="label">Cadastrado em</div><div class="value">${p.data}</div></div>
+      <div class="modal-field"><div class="label">Responsável</div><div class="value">${p.contato.split('—')[0].trim()}</div></div>
+    </div>
     <div class="modal-section"><h4>Descrição do Problema</h4><p>${p.descricao}</p></div>
     <div class="modal-section"><h4>Impacto Estimado</h4><p>${p.impacto}</p></div>
-    <div class="modal-section"><h4>Tipos de Solução Aceitos</h4><div style="display:flex;gap:7px;flex-wrap:wrap;margin-top:4px">${p.tiposSolucao.map(t=>`<span class="tag" style="color:var(--gold);border-color:rgba(201,150,26,.2)">✦ ${t}</span>`).join('')}</div></div>
+    <div class="modal-section">
+      <h4>Tipos de Solução Aceitos</h4>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+        ${p.tiposSolucao.map(t=>`<span class="tag" style="color:var(--red);border-color:rgba(200,16,46,.2);background:var(--red-light)">✦ ${t}</span>`).join('')}
+      </div>
+    </div>
     <div class="modal-section"><h4>Cursos Sugeridos pelo CIAPE</h4><p>${p.cursoSugerido}</p></div>
-    <button class="modal-propose-btn" onclick="showToast('Proposta enviada ao CIAPE! O coordenador entrará em contato.')">Propor Solução para este Problema →</button>`;
+    <button class="modal-propose-btn" onclick="showToast('Proposta enviada ao CIAPE! O coordenador entrará em contato.')">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+      Propor Solução para este Problema
+    </button>`;
   openModal('detailModal');
 }
 
+/* ─── MODAL HELPERS ─── */
 function openModal(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden'}
 function closeModal(id){document.getElementById(id).classList.remove('open');document.body.style.overflow=''}
 function closeIfOverlay(e,id){if(e.target===document.getElementById(id))closeModal(id)}
 function openFormModal(){openModal('formModal')}
 
-function toggleColl(hdr){hdr.classList.toggle('open');hdr.nextElementSibling.classList.toggle('open')}
-function initColls(){if(window.innerWidth>=900){document.querySelectorAll('.coll-body').forEach(b=>b.classList.add('open'));document.querySelectorAll('.coll-hdr').forEach(h=>h.classList.add('open'))}}
+/* ─── COLLAPSIBLES ─── */
+function toggleColl(hdr){
+  hdr.classList.toggle('open');
+  hdr.nextElementSibling.classList.toggle('open');
+}
+function initColls(){
+  if(window.innerWidth>=960){
+    document.querySelectorAll('.sidebar-card-body').forEach(b=>b.classList.add('open'));
+    document.querySelectorAll('.sidebar-card-head').forEach(h=>h.classList.add('open'));
+  }
+}
 window.addEventListener('resize',initColls);
 
+/* ─── HAMBURGER ─── */
 function toggleDrawer(){document.getElementById('hamburger').classList.toggle('open');document.getElementById('mobileDrawer').classList.toggle('open')}
 function closeDrawer(){document.getElementById('hamburger').classList.remove('open');document.getElementById('mobileDrawer').classList.remove('open')}
 
-function scrollTo(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+/* ─── SCROLL ─── */
+function scrollToEl(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
 
+/* ─── SUBMIT COMPACT ─── */
 function submitProblem(){
   const e=document.getElementById('sb-empresa').value.trim();
   const t=document.getElementById('sb-titulo').value.trim();
   const a=document.getElementById('sb-area').value;
   const d=document.getElementById('sb-descricao').value.trim();
-  if(!e||!t||!a||!d){alert('Preencha: Empresa, Título, Área e Descrição.');return}
+  if(!e||!t||!a||!d){alert('Preencha os campos obrigatórios: Empresa, Título, Área e Descrição.');return}
   const tipos=[];
-  if(document.getElementById('cb-aula').checked)tipos.push('Projeto de Aula');
-  if(document.getElementById('cb-extensao').checked)tipos.push('Extensão');
-  if(document.getElementById('cb-pesquisa').checked)tipos.push('Pesquisa Aplicada');
-  if(document.getElementById('cb-consultoria').checked)tipos.push('Consultoria');
+  ['cb-aula','cb-extensao','cb-pesquisa','cb-consultoria'].forEach((id,idx)=>{
+    const labels=['Projeto de Aula','Extensão','Pesquisa Aplicada','Consultoria'];
+    if(document.getElementById(id).checked)tipos.push(labels[idx]);
+  });
   const u=document.getElementById('sb-urgencia').value||'Média';
   const c=document.getElementById('sb-contato').value||'—';
-  const now=new Date();const dt=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+  const now=new Date();
+  const dt=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
   problems.unshift({id:Date.now(),empresa:e,titulo:t,area:a,descricao:d,setor:'Outro',impacto:'A definir',urgencia:u,tiposSolucao:tipos.length?tipos:['A definir'],contato:c,status:'aberto',data:dt,cursoSugerido:'A ser analisado pelo CIAPE'});
   ['sb-empresa','sb-titulo','sb-descricao','sb-contato','sb-email'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('sb-area').value='';document.getElementById('sb-urgencia').value='';
   ['cb-aula','cb-extensao','cb-pesquisa','cb-consultoria'].forEach(id=>document.getElementById(id).checked=false);
-  renderCards();showToast('Problema cadastrado! CIAPE entrará em contato em até 48h.');
+  renderCards();showToast('Problema cadastrado! O CIAPE entrará em contato em até 48h.');
 }
 
+/* ─── SUBMIT FULL ─── */
 function submitProblemFull(){
   const e=document.getElementById('fm-empresa').value.trim();
   const t=document.getElementById('fm-titulo').value.trim();
@@ -506,22 +1266,28 @@ function submitProblemFull(){
   const d=document.getElementById('fm-descricao').value.trim();
   const em=document.getElementById('fm-email').value.trim();
   if(!e||!t||!a||!d||!em){alert('Preencha: Empresa, Título, Área, Descrição e E-mail.');return}
-  const tipos=[];['fm-cb1','fm-cb2','fm-cb3','fm-cb4'].forEach(id=>{const el=document.getElementById(id);if(el.checked)tipos.push(el.value)});
+  const tipos=[];
+  ['fm-cb1','fm-cb2','fm-cb3','fm-cb4'].forEach(id=>{const el=document.getElementById(id);if(el.checked)tipos.push(el.value)});
   const ur=document.getElementById('fm-urgencia').value;
   let u='Média';if(ur.startsWith('Alta'))u='Alta';else if(ur.startsWith('Baixa'))u='Baixa';
   const r=document.getElementById('fm-responsavel').value||'—';
   const i=document.getElementById('fm-impacto').value||'A definir';
   const s=document.getElementById('fm-setor').value||'Outro';
-  const now=new Date();const dt=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
+  const now=new Date();
+  const dt=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
   problems.unshift({id:Date.now(),empresa:e,titulo:t,area:a,descricao:d,setor:s,impacto:i,urgencia:u,tiposSolucao:tipos.length?tipos:['A definir'],contato:r,status:'aberto',data:dt,cursoSugerido:'A ser analisado pelo CIAPE'});
-  closeModal('formModal');renderCards();showToast('Problema enviado! CIAPE retornará em até 48h no e-mail informado.');
+  closeModal('formModal');renderCards();showToast('Problema enviado! O CIAPE retornará em até 48h no e-mail informado.');
 }
 
+/* ─── TOAST ─── */
 function showToast(msg){
-  const t=document.getElementById('toast');document.getElementById('toastMsg').textContent=msg;
-  t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4500);
+  const t=document.getElementById('toast');
+  document.getElementById('toastMsg').textContent=msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),4500);
 }
 
+/* ─── INIT ─── */
 initColls();renderCards();
 </script>
 </body>
