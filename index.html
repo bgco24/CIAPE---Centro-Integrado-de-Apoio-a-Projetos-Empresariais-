@@ -2092,6 +2092,8 @@ O Banco de Problemas e Soluções organiza, qualifica e direciona demandas reais
       <div class="form-group"><label>Disponibilidade</label><select id="fm-reuniao"><option value="">Selecione</option><option>Presencial na empresa</option><option>Presencial na UNIPAR</option><option>Videoconferência</option><option>Indiferente</option></select></div>
     </div>
     <div class="form-group"><label>Observações</label><textarea id="fm-obs" rows="3" placeholder="Documentos, sigilo, parcerias com a UNIPAR…"></textarea></div>
+    <!-- Honeypot anti-spam: invisível para pessoas, robôs preenchem -->
+    <input type="text" id="fm-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;height:0;width:0;opacity:0">
     <button class="submit-btn" onclick="submitProblemFull()">
       <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
       Enviar ao CIAPE
@@ -2118,6 +2120,9 @@ const statusLabel={aberto:'Aberto','em-andamento':'Em Andamento',concluido:'Conc
 const urgTagClass={Alta:'urg-alta',Média:'urg-media',Baixa:'urg-baixa'};
 let currentFilter='todos', currentSearch='';
 
+/* Escapa HTML antes de inserir dados em innerHTML (defesa contra XSS) */
+function esc(v){const m={'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'};return String(v==null?'':v).replace(/[&<>"']/g,c=>m[c]);}
+
 /* ─── GOOGLE SHEETS INTEGRATION ───
    1) Crie uma planilha no Google Sheets.
    2) Vá em Extensões > Apps Script.
@@ -2126,11 +2131,15 @@ let currentFilter='todos', currentSearch='';
    5) Cole a URL gerada abaixo, substituindo o texto entre aspas.
 */
 const FORMSPREE_URL = 'https://formspree.io/f/mwvadleg';
+/* Fluxo definido pela Direção: todo cadastro chega SOMENTE por e-mail
+   (via Formspree). O mural exibe apenas os casos fixos abaixo;
+   nada é publicado automaticamente. */
 
 async function sendToGoogleSheets(payload){
   try {
     const body = new FormData();
-    body.append('_subject', 'CIAPE - Novo problema cadastrado: ' + (payload.titulo || ''));
+    body.append('_subject', 'CIAPE — Novo problema: ' + (payload.empresa || '') + ' | ' + (payload.titulo || ''));
+    if (payload.email) body.append('_replyto', payload.email); // "Responder" no e-mail vai direto à empresa
     body.append('empresa',         payload.empresa        || '');
     body.append('cnpj',            payload.cnpj           || '');
     body.append('responsavel',     payload.responsavel    || payload.contato || '');
@@ -2145,14 +2154,7 @@ async function sendToGoogleSheets(payload){
     body.append('tiposSolucao',    Array.isArray(payload.tiposSolucao) ? payload.tiposSolucao.join(', ') : (payload.tiposSolucao||''));
     body.append('urgencia',        payload.urgencia       || '');
     body.append('disponibilidade', payload.disponibilidade|| '');
-    body.append('sigilo',          payload.sigilo         ? 'SIM' : 'NAO');
     body.append('observacoes',     payload.observacoes    || '');
-    body.append('palestra',        payload.palestra       ? 'SIM' : 'NAO');
-    body.append('palestraTema',    payload.palestraTema   || '');
-    body.append('palestraPublico', payload.palestraPublico|| '');
-    body.append('palestraQtd',     payload.palestraQtd    || '');
-    body.append('palestraData',    payload.palestraData   || '');
-    body.append('palestraFormato', payload.palestraFormato|| '');
     body.append('origem',          'Site CIAPE UNIPAR Cianorte');
 
     const res = await fetch(FORMSPREE_URL, {
@@ -2187,25 +2189,25 @@ function renderCards(){
     c.className='problem-card';c.style.animationDelay=(i*.05)+'s';c.onclick=()=>openDetail(p.id);
     c.innerHTML=`
       <div class="card-top">
-        <div><div class="card-company">${p.empresa}</div><div class="card-sector">${p.setor}</div></div>
-        <span class="status-badge ${p.status}">${statusLabel[p.status]}</span>
+        <div><div class="card-company">${esc(p.empresa)}</div><div class="card-sector">${esc(p.setor)}</div></div>
+        <span class="status-badge ${esc(p.status)}">${esc(statusLabel[p.status]||p.status)}</span>
       </div>
-      <div class="card-problem-title">${p.titulo}</div>
-      <div class="card-desc">${p.descricao}</div>
+      <div class="card-problem-title">${esc(p.titulo)}</div>
+      <div class="card-desc">${esc(p.descricao)}</div>
       <div class="card-tags">
-        <span class="tag area">${p.area}</span>
-        ${p.tiposSolucao.map(t=>`<span class="tag">${t}</span>`).join('')}
-        <span class="tag ${urgTagClass[p.urgencia]}">● ${p.urgencia}</span>
+        <span class="tag area">${esc(p.area)}</span>
+        ${(p.tiposSolucao||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}
+        <span class="tag ${urgTagClass[p.urgencia]||''}">● ${esc(p.urgencia)}</span>
       </div>
       <div class="card-footer">
         <div class="card-meta">
           <span class="meta-item">
             <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            ${p.data}
+            ${esc(p.data)}
           </span>
           <span class="meta-item">
             <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            ${p.contato.split('—')[0].trim()}
+            ${esc((p.contato||'—').split('—')[0].trim())}
           </span>
         </div>
         <span class="card-cta">
@@ -2215,45 +2217,58 @@ function renderCards(){
       </div>`;
     list.appendChild(c);
   });
-  document.getElementById('stat-total').textContent=problems.length;
-  document.getElementById('stat-abertos').textContent=problems.filter(p=>p.status==='aberto').length;
-  document.getElementById('stat-andamento').textContent=problems.filter(p=>p.status==='em-andamento').length;
-  document.getElementById('stat-concluidos').textContent=problems.filter(p=>p.status==='concluido').length;
+  /* Contadores de estatísticas (se existirem na página) */
+  const setStat=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  setStat('stat-total',problems.length);
+  setStat('stat-abertos',problems.filter(p=>p.status==='aberto').length);
+  setStat('stat-andamento',problems.filter(p=>p.status==='em-andamento').length);
+  setStat('stat-concluidos',problems.filter(p=>p.status==='concluido').length);
 }
 function filterCards(s,btn){currentFilter=s;document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderCards()}
 function searchCards(v){currentSearch=v;renderCards()}
 
 /* ─── DETAIL ─── */
+let currentDetail=null;
 function openDetail(id){
   const p=problems.find(x=>x.id===id);if(!p)return;
+  currentDetail=p;
   document.getElementById('detailBody').innerHTML=`
     <div class="modal-badge-row">
-      <span class="status-badge ${p.status}">${statusLabel[p.status]}</span>
-      <span class="tag area">${p.area}</span>
-      <span class="tag">${p.setor}</span>
-      <span class="tag ${urgTagClass[p.urgencia]}">● ${p.urgencia}</span>
+      <span class="status-badge ${esc(p.status)}">${esc(statusLabel[p.status]||p.status)}</span>
+      <span class="tag area">${esc(p.area)}</span>
+      <span class="tag">${esc(p.setor)}</span>
+      <span class="tag ${urgTagClass[p.urgencia]||''}">● ${esc(p.urgencia)}</span>
     </div>
-    <div class="modal-company">${p.empresa}</div>
-    <div class="modal-problem">${p.titulo}</div>
+    <div class="modal-company">${esc(p.empresa)}</div>
+    <div class="modal-problem">${esc(p.titulo)}</div>
     <div class="modal-grid">
-      <div class="modal-field"><div class="label">Área Afetada</div><div class="value">${p.area}</div></div>
-      <div class="modal-field"><div class="label">Setor</div><div class="value">${p.setor}</div></div>
-      <div class="modal-field"><div class="label">Cadastrado em</div><div class="value">${p.data}</div></div>
-      <div class="modal-field"><div class="label">Responsável</div><div class="value">${p.contato.split('—')[0].trim()}</div></div>
+      <div class="modal-field"><div class="label">Área Afetada</div><div class="value">${esc(p.area)}</div></div>
+      <div class="modal-field"><div class="label">Setor</div><div class="value">${esc(p.setor)}</div></div>
+      <div class="modal-field"><div class="label">Cadastrado em</div><div class="value">${esc(p.data)}</div></div>
+      <div class="modal-field"><div class="label">Responsável</div><div class="value">${esc((p.contato||'—').split('—')[0].trim())}</div></div>
     </div>
-    <div class="modal-section"><h4>Descrição do Problema</h4><p>${p.descricao}</p></div>
-    <div class="modal-section"><h4>Impacto Estimado</h4><p>${p.impacto}</p></div>
+    <div class="modal-section"><h4>Descrição do Problema</h4><p>${esc(p.descricao)}</p></div>
+    <div class="modal-section"><h4>Impacto Estimado</h4><p>${esc(p.impacto)}</p></div>
     <div class="modal-section">
       <h4>Tipos de Solução Aceitos</h4>
       <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
-        ${p.tiposSolucao.map(t=>`<span class="tag" style="color:var(--red);border-color:rgba(200,16,46,.2);background:var(--red-light)">✦ ${t}</span>`).join('')}
+        ${(p.tiposSolucao||[]).map(t=>`<span class="tag" style="color:var(--red);border-color:rgba(200,16,46,.2);background:var(--red-light)">✦ ${esc(t)}</span>`).join('')}
       </div>
     </div>
-    <div class="modal-section"><h4>Cursos Sugeridos pelo CIAPE</h4><p>${p.cursoSugerido}</p></div>
-    <button class="modal-propose-btn" onclick="showToast('Proposta enviada ao CIAPE! O coordenador entrará em contato.')">
-      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
-      Propor Solução para este Problema
-    </button>`;
+    <div class="modal-section"><h4>Cursos Sugeridos pelo CIAPE</h4><p>${esc(p.cursoSugerido)}</p></div>
+    <div id="proposeArea">
+      <button class="modal-propose-btn" onclick="showProposeForm()">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+        Propor Solução para este Problema
+      </button>
+      <div id="proposeForm" style="display:none;margin-top:12px">
+        <div class="form-group"><label>Seu nome <span class="req">*</span></label><input type="text" id="pp-nome" placeholder="Nome completo"></div>
+        <div class="form-group"><label>Seu e-mail <span class="req">*</span></label><input type="email" id="pp-email" placeholder="voce@exemplo.com"></div>
+        <div class="form-group"><label>Vínculo</label><select id="pp-vinculo"><option value="">Selecione</option><option>Aluno UNIPAR</option><option>Professor UNIPAR</option><option>Coordenador de curso</option><option>Outro</option></select></div>
+        <div class="form-group"><label>Sua proposta <span class="req">*</span></label><textarea id="pp-msg" rows="3" placeholder="Descreva brevemente como pretende abordar este problema…"></textarea></div>
+        <button class="modal-propose-btn" id="pp-btn" onclick="submitProposal()">Enviar proposta ao CIAPE</button>
+      </div>
+    </div>`;
   openModal('detailModal');
 }
 
@@ -2293,29 +2308,6 @@ function closeDrawer(){document.getElementById('hamburger').classList.remove('op
 /* ─── SCROLL ─── */
 function scrollToEl(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
 
-/* ─── SUBMIT COMPACT ─── */
-function submitProblem(){
-  const e=document.getElementById('sb-empresa').value.trim();
-  const t=document.getElementById('sb-titulo').value.trim();
-  const a=document.getElementById('sb-area').value;
-  const d=document.getElementById('sb-descricao').value.trim();
-  if(!e||!t||!a||!d){alert('Preencha os campos obrigatórios: Empresa, Título, Área e Descrição.');return}
-  const tipos=[];
-  ['cb-aula','cb-extensao','cb-pesquisa','cb-consultoria'].forEach((id,idx)=>{
-    const labels=['Projeto de Aula','Extensão','Pesquisa Aplicada','Consultoria'];
-    if(document.getElementById(id).checked)tipos.push(labels[idx]);
-  });
-  const u=document.getElementById('sb-urgencia').value||'Média';
-  const c=document.getElementById('sb-contato').value||'—';
-  const now=new Date();
-  const dt=`${String(now.getDate()).padStart(2,'0')}/${String(now.getMonth()+1).padStart(2,'0')}/${now.getFullYear()}`;
-  problems.unshift({id:Date.now(),empresa:e,titulo:t,area:a,descricao:d,setor:'Outro',impacto:'A definir',urgencia:u,tiposSolucao:tipos.length?tipos:['A definir'],contato:c,status:'aberto',data:dt,cursoSugerido:'A ser analisado pelo CIAPE'});
-  ['sb-empresa','sb-titulo','sb-descricao','sb-contato','sb-email'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('sb-area').value='';document.getElementById('sb-urgencia').value='';
-  ['cb-aula','cb-extensao','cb-pesquisa','cb-consultoria'].forEach(id=>document.getElementById(id).checked=false);
-  renderCards();showToast('Problema cadastrado! O CIAPE entrará em contato em até 48h.');
-}
-
 /* ─── SUBMIT FULL ─── */
 async function submitProblemFull(){
   const btn=document.querySelector('#formModal .submit-btn');
@@ -2337,11 +2329,12 @@ async function submitProblemFull(){
 
   /* ── Validação campo a campo ── */
   const obrigatorios = [
-    {id:'fm-empresa',  label:'Empresa'},
-    {id:'fm-email',    label:'E-mail'},
-    {id:'fm-titulo',   label:'Título do Problema'},
-    {id:'fm-area',     label:'Área Afetada'},
-    {id:'fm-descricao',label:'Descrição'},
+    {id:'fm-empresa',     label:'Empresa'},
+    {id:'fm-responsavel', label:'Responsável'},
+    {id:'fm-email',       label:'E-mail'},
+    {id:'fm-titulo',      label:'Título do Problema'},
+    {id:'fm-area',        label:'Área Afetada'},
+    {id:'fm-descricao',   label:'Descrição'},
   ];
   for(const campo of obrigatorios){
     const el = document.getElementById(campo.id);
@@ -2356,6 +2349,21 @@ async function submitProblemFull(){
       return;
     }
   }
+
+  /* Formato de e-mail */
+  const emailEl = document.getElementById('fm-email');
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(emailEl.value.trim())){
+    emailEl.focus();
+    emailEl.style.borderColor='#C8102E';
+    emailEl.style.boxShadow='0 0 0 3px rgba(200,16,46,.18)';
+    setTimeout(()=>{emailEl.style.borderColor='';emailEl.style.boxShadow='';},2500);
+    alert('Informe um e-mail válido para que o CIAPE possa retornar o contato.');
+    return;
+  }
+
+  /* Honeypot anti-spam: campo invisível que só robôs preenchem */
+  const hp = document.getElementById('fm-website');
+  if(hp && hp.value){ closeModal('formModal'); return; }
 
   const tipos=[];
   ['fm-cb1','fm-cb2','fm-cb3','fm-cb4'].forEach(id=>{const el=document.getElementById(id);if(el.checked)tipos.push(el.value)});
@@ -2389,12 +2397,10 @@ async function submitProblemFull(){
   };
 
   btn.disabled=true;
-  btn.innerHTML='Enviando para o Google Sheets…';
+  btn.innerHTML='Enviando…';
 
-  const envio=await sendToGoogleSheets(novoProblema);
-  problems.unshift(novoProblema);
+  const envio = await sendToGoogleSheets(novoProblema); // envia por e-mail ao CIAPE (Formspree)
   closeModal('formModal');
-  renderCards();
 
   document.querySelectorAll('#formModal input,#formModal textarea,#formModal select').forEach(el=>{
     if(el.type==='checkbox') el.checked=false; else el.value='';
@@ -2404,11 +2410,51 @@ async function submitProblemFull(){
   btn.innerHTML=originalBtn;
 
   if(envio.ok){
-    showToast('Problema enviado e registrado no Google Sheets.');
-  }else if(envio.reason==='not-configured'){
-    showToast('Problema salvo na tela. Cole a URL do Apps Script para enviar ao Google Sheets.');
+    showToast('Recebido! O CIAPE entrará em contato em até 48h.');
   }else{
-    showToast('Problema salvo na tela. Falha ao enviar ao Google Sheets.');
+    showToast('Não foi possível enviar agora. Tente novamente em instantes.');
+  }
+}
+
+/* ─── PROPOR SOLUÇÃO (envio real por e-mail) ─── */
+function showProposeForm(){
+  const f=document.getElementById('proposeForm');
+  if(f){ f.style.display='block'; const n=document.getElementById('pp-nome'); if(n)n.focus(); }
+}
+async function submitProposal(){
+  const titulo  = currentDetail ? currentDetail.titulo  : '';
+  const empresa = currentDetail ? currentDetail.empresa : '';
+  const nome =(document.getElementById('pp-nome') ||{}).value||'';
+  const email=(document.getElementById('pp-email')||{}).value||'';
+  const vinc =(document.getElementById('pp-vinculo')||{}).value||'';
+  const msg  =(document.getElementById('pp-msg')  ||{}).value||'';
+  if(!nome.trim()||!msg.trim()){ alert('Preencha seu nome e a proposta.'); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())){ alert('Informe um e-mail válido para retorno do CIAPE.'); return; }
+  const btn=document.getElementById('pp-btn');
+  btn.disabled=true; btn.textContent='Enviando…';
+  try{
+    const body=new FormData();
+    body.append('_subject','CIAPE — Proposta de solução: '+empresa+' | '+titulo);
+    body.append('_replyto', email.trim());
+    body.append('tipo','PROPOSTA DE SOLUÇÃO');
+    body.append('problema', titulo);
+    body.append('empresaDoProblema', empresa);
+    body.append('proponente', nome.trim());
+    body.append('emailProponente', email.trim());
+    body.append('vinculo', vinc);
+    body.append('proposta', msg.trim());
+    const res=await fetch(FORMSPREE_URL,{method:'POST',body:body,headers:{'Accept':'application/json'}});
+    const json=await res.json();
+    if(json.ok){
+      closeModal('detailModal');
+      showToast('Proposta enviada ao CIAPE! Retorno em até 48h.');
+    }else{
+      btn.disabled=false; btn.textContent='Enviar proposta ao CIAPE';
+      alert('Não foi possível enviar agora. Tente novamente em instantes.');
+    }
+  }catch(err){
+    btn.disabled=false; btn.textContent='Enviar proposta ao CIAPE';
+    alert('Sem conexão. Verifique a internet e tente novamente.');
   }
 }
 
